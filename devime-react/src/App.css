@@ -1,3 +1,4 @@
+
 @charset "UTF-8";
 /*!
 * Start Bootstrap - Agency v7.0.12 (https://startbootstrap.com/theme/agency)
@@ -10,9 +11,28 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-
+.container {
+  width: 100%;
+  max-width: 1200px; /* Adjust as needed */
+  margin: 0 auto;
+  padding: 0 1rem; /* Optional: Adds small side padding */
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+body{
+  overflow-x: hidden;
+}
 
 :root {
+  width: 100%;
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
   --bs-purple: #6f42c1;
@@ -80,7 +100,9 @@
   --bs-code-color: #d63384;
   --bs-highlight-bg: #fff4cc;
 }
-
+#root{
+  width: 100%;
+}
 *,
 *::before,
 *::after {
@@ -92,10 +114,14 @@
     scroll-behavior: smooth;
   }
 }
+*, *::before, *::after {
+  box-sizing: border-box;
+}
 
 body {
   overflow-x: hidden;
   margin: 0;
+  padding: 0;
   font-family: var(--bs-body-font-family);
   font-size: var(--bs-body-font-size);
   font-weight: var(--bs-body-font-weight);
@@ -106,6 +132,7 @@ body {
   -webkit-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+
 
 b{
   color: #ffc800;
