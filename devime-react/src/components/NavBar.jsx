@@ -1,13 +1,29 @@
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useState,  useEffect } from 'react';
+import './NavBar.css';
+import NavBarDropDown from './NavBarDropDown';
+
 
 function NavBar() {
-  const [isCollapsed,setIsCollapsed]=useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isSignedIn, setIsSignedIn] = useState(false); // State to manage connection status
 
-  const toggleNavbar = () => {
-    setIsCollapsed(!isCollapsed);
+  // Close dropdown when clicking outside
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      // You can add dropdown close logic here if needed in the future
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handler for logout
+  const handleLogout = () => {
+    // Clear auth tokens or session
+    setIsSignedIn(false);
   };
 
+  // Existing navbar scroll effects
   useEffect(() => {
     const navbarShrink = () => {
       const navbarCollapsible = document.querySelector('#mainNav');
@@ -19,10 +35,13 @@ function NavBar() {
       }
     };
 
-    navbarShrink(); // Initial check
+    navbarShrink();
     document.addEventListener('scroll', navbarShrink);
 
-    // Bootstrap ScrollSpy
+    // Initialize Bootstrap ScrollSpy if available
+    // This is to ensure that the navbar highlights the current section when scrolling
+    // This is useful for single-page applications where sections are linked in the navbar
+
     const mainNav = document.querySelector('#mainNav');
     if (mainNav && window.bootstrap?.ScrollSpy) {
       new window.bootstrap.ScrollSpy(document.body, {
@@ -30,8 +49,9 @@ function NavBar() {
         rootMargin: '0px 0px -40%',
       });
     }
-
-    // Responsive nav collapse
+    // Handle responsive navbar toggling
+    // Add click event to close the navbar when a link is clicked
+    // This is to ensure that the navbar collapses on mobile view when a link is clicked
     const navbarToggler = document.querySelector('.navbar-toggler');
     const responsiveNavItems = document.querySelectorAll('#navbarResponsive .nav-link');
 
@@ -42,36 +62,50 @@ function NavBar() {
         }
       });
     });
-
-    // Cleanup event listeners on unmount
+    // Ensure the navbar is responsive
+    if (navbarToggler) {
+      navbarToggler.addEventListener('click', () => {
+        setIsCollapsed(!isCollapsed);
+      });
+    }
+    // Clean up event listeners
     return () => {
       document.removeEventListener('scroll', navbarShrink);
       responsiveNavItems.forEach((item) => {
         item.removeEventListener('click', () => {});
       });
     };
-  }, []);
+  }, [isCollapsed]);
 
-    return(
-        <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-            <div className="container">
-                <a className="navbar-brand" href="#page-top">Devime</a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" onClick={toggleNavbar}>
-                    Menu
-                    <i className="fas fa-bars ms-1"></i>
-                </button>
-                <div className="collapse navbar-collapse" id="navbarResponsive">
-                    <ul className="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
-                        <li className="nav-item"><a className="nav-link" href="#services">Nos services</a></li>
-                        <li className="nav-item"><a className="nav-link" href="#about">A propos</a></li>
-                        <li className="nav-item"><a className="nav-link" href="#team">notre Equipe</a></li>
-                        <li className="nav-item"><a className="nav-link" href="#contact">Contactez nous</a></li>
-                        <li className="nav-item"><a className="nav-link" href="#signin "><i className="fa-solid fa-user"></i></a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    )
+
+  return (
+    <>
+      <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <div className="container">
+          <a className="navbar-brand" href="#page-top">Devime</a>
+          <button 
+            className="navbar-toggler" 
+            type="button" 
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          >
+            Menu
+            <i className="fas fa-bars ms-1"></i>
+          </button>
+          <div className={`collapse navbar-collapse ${isCollapsed ? '' : 'show'}`} id="navbarResponsive">
+            <ul className="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+              <li className="nav-item"><a className="nav-link" href="#services">Nos services</a></li>
+              <li className="nav-item"><a className="nav-link" href="#about">A propos</a></li>
+              <li className="nav-item"><a className="nav-link" href="#team">notre Equipe</a></li>
+              <li className="nav-item"><a className="nav-link" href="#contact">Contactez nous</a></li>
+              <li className="nav-item">
+                <NavBarDropDown isSignedIn={isSignedIn} onLogout={handleLogout} />
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
 }
 
-export default NavBar
+export default NavBar;
