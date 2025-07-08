@@ -71,7 +71,7 @@ function NavBar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div className="container">
-        <a className="navbar-brand" href="#page-top">Devime</a>
+        <a className="navbar-brand" href="/">Devime</a>
         <button
           className="navbar-toggler"
           type="button"

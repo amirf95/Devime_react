@@ -12,6 +12,7 @@ import Services from './components/Services';
 import Team from './components/Team';
 import Login from './components/authentification/LoginForm';
 import Register from './components/authentification/Register';
+import UserProfile from './components/authentification/userprofil';
 
 function MainApp() {
   return (
@@ -36,6 +37,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<MainApp />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<UserProfile />} />
 
       </Routes>
     </Router>

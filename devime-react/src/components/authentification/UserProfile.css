@@ -1,0 +1,58 @@
+.user-profile-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.user-profile-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.user-profile-subtitle {
+  margin-top: 30px;
+  font-size: 18px;
+}
+
+.user-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.user-profile-input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.user-profile-button {
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-profile-button:hover {
+  background-color: #0056b3;
+}
+
+.user-profile-message {
+  color: green;
+  margin: 10px 0;
+}
+
+.user-profile-error {
+  color: red;
+  margin: 10px 0;
+}
