@@ -1,0 +1,68 @@
+.register-container {
+  max-width: 400px;
+  margin: 60px auto;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background-color: #f0f4f8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-image: url('construction-bg.jpg'); /* Replace with your image path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.register-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #000000; /* Black text for "Créer un compte" */
+}
+
+.register-container form {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white for form */
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.register-container input {
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #e0e7f0;
+}
+
+.register-container select {
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #e0e7f0;
+}
+
+.register-container button {
+  padding: 12px;
+  background-color: #ffc107; /* Yellow from buttons in image */
+  color: #ffffff;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.register-container button:hover {
+  background-color: #ffa000; /* Darker yellow on hover */
+}
+
+.register-container p {
+  text-align: center;
+  margin-top: 10px;
+  color: #d32f2f; /* Red for error messages */
+  font-weight: bold;
+}
