@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import NavBarDropDown from './NavBarDropDown';
+
 
 function NavBar() {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -93,11 +95,17 @@ function NavBar() {
 
             {userInfo ? (
               <>
-                <li className="nav-item d-flex align-items-center">
-                  <a className="nav-link" href="#signin">
+                <li className="nav-item">
+                  <div 
+                  className="dropdown-trigger d-flex align-items-center" 
+                  style={{ cursor: 'pointer' }}
+                  >
                     <i className="fa-solid fa-user"></i>
-                    <span className="ms-2">{userInfo.username} ({userInfo.role})</span>
-                  </a>
+                    <span className="ms-2">
+                      {userInfo.username} ({userInfo.role})
+                    </span>
+                    <NavBarDropDown isSignedIn={!!userInfo} onLogout={handleLogout} />
+                  </div>
                 </li>
                 <li className="nav-item">
                   <button
@@ -119,6 +127,8 @@ function NavBar() {
                 </li>
               </>
             )}
+            
+
           </ul>
         </div>
       </div>

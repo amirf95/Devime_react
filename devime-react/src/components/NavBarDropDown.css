@@ -1,0 +1,56 @@
+/* Container for positioning */
+.dropdown-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown menu */
+.dropdown-content {
+  position: absolute;
+  right: 0;
+  top: 100%; /* Appears below the trigger */
+  background: #2d3748; /* Dark background (match navbar) */
+  min-width: 160px;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: none;
+  padding: 0.5rem 0;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
+/* Dropdown items */
+.dropdown-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown-content li a,
+.dropdown-content li button {
+  display: block;
+  padding: 8px 16px;
+  color: white; /* Text color */
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dropdown-content li:hover {
+  background: #4a5568; /* Hover effect */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 992px) {
+  .dropdown-content {
+    position: static;
+    width: 100%;
+    box-shadow: none;
+  }
+}
