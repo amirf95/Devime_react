@@ -4,6 +4,8 @@ import './Login.css';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../NavBar';
 import Footer from '../Footer';
+import Swal from 'sweetalert2';
+
 
 function Login() {
   const [credentials, setCredentials] = useState({
@@ -11,7 +13,6 @@ function Login() {
     password: '',
   });
 
-  const [message, setMessage] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
   const navigate = useNavigate();
 
@@ -32,6 +33,20 @@ function Login() {
   const handleChange = e => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+  const showToast = (icon, title) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({ icon, title });
+ };
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -47,15 +62,25 @@ function Login() {
       }
     )
     .then(response => {
-      setMessage(' Connexion réussie !');
+      showToast("success", "Connexion réussie !");
       setCredentials({ username: '', password: '' });
       navigate('/'); // 🔁 Redirection vers la page d'accueil
     })
     .catch(error => {
       if (error.response) {
-        setMessage(' Nom ou mot de passe invalide.');
+        const errorData = error.response.data;
+        let errorMessage = 'Nom ou mot de passe invalide.';
+        if (typeof errorData === 'object') {
+          errorMessage = Object.values(errorData)
+          .flat()
+          .join('\n');
+      } else if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        }
+        showToast("error", errorMessage);
       } else {
-        setMessage('Erreur réseau.');
+
+      showToast("error", "Erreur de connexion. Veuillez réessayer plus tard.");
       }
     });
   };
@@ -65,7 +90,6 @@ function Login() {
       <NavBar variant="login"/>
       <div className="login-container">
         <h2>Connexion</h2>
-        {message && <p>{message}</p>}
         <form onSubmit={handleSubmit}>
           <input 
             className='login-input'

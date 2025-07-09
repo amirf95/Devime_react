@@ -3,6 +3,7 @@ import axios from 'axios';
 import './Register.css';
 import NavBar from '../NavBar';
 import Footer from '../Footer';
+import Swal from 'sweetalert2';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ function Register() {
     role: 'client',
   });
 
-  const [message, setMessage] = useState('');
+  
   const [csrfToken, setCsrfToken] = useState('');
 
   // ✅ Obtenir le CSRF token au chargement
@@ -28,12 +29,28 @@ function Register() {
         setCsrfToken(cookieValue || '');
       })
       .catch(err => {
+        
         console.error('Failed to get CSRF token:', err);
       });
   }, []);
 
   const handleChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  // ✅ Afficher un toast de succès ou d'erreur
+  const showToast = (icon, title) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({ icon, title });
   };
 
   const handleSubmit = e => {
@@ -50,7 +67,8 @@ function Register() {
       }
     )
     .then(response => {
-      setMessage('Utilisateur inscrit avec succès !');
+      console.log('Registration successful:', response.data);
+      showToast('success', 'Utilisateur inscrit avec succès !');
 
       // ✅ Réinitialiser les champs après inscription
       setFormData({
@@ -64,10 +82,38 @@ function Register() {
     })
     .catch(error => {
       if (error.response) {
-        console.log('Form errors:', error.response.data);
-        setMessage(JSON.stringify(error.response.data.errors));
+        const errorData = error.response.data;
+        let errorMessage = 'Erreur d\'inscription.';
+        if (typeof errorData === 'object') {
+           // Handle nested error objects (common in Django)
+      if (errorData.errors) {
+        // Case 1: Error object with 'errors' property
+        errorMessage = Object.entries(errorData.errors)
+          .map(([field, errors]) => {
+            const fieldName = field === 'password1' ? 'Mot de passe' : 
+                            field === 'password2' ? 'Confirmation mot de passe' : 
+                            field;
+            return `${fieldName}: ${Array.isArray(errors) ? errors.join(', ') : errors}`;
+          })
+          .join('\n');
       } else {
-        setMessage('Une erreur inconnue est survenue.');
+        // Case 2: Direct field errors
+        errorMessage = Object.entries(errorData)
+          .map(([field, errors]) => {
+            const fieldName = field === 'password1' ? 'Mot de passe' : 
+                            field === 'password2' ? 'Confirmation mot de passe' : 
+                            field;
+            return `${fieldName}: ${Array.isArray(errors) ? errors.join(', ') : errors}`;
+          })
+          .join('\n');
+      }
+
+        } else if (typeof errorData === 'string') {
+          errorMessage = errorData;
+        }
+        showToast('error', errorMessage);
+      } else {
+        showToast('error', 'Erreur de connexion. Veuillez réessayer plus tard.');
       }
     });
   };
@@ -77,7 +123,6 @@ function Register() {
     <NavBar />
     <div className="register-container">
       <h2>Créer un compte</h2>
-      {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
         <input className='input-register'
           name="username"
