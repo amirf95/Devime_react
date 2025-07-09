@@ -19,3 +19,7 @@
     z-index: 1000;
     cursor: pointer;
 }
+.login-navbar {
+    background-color: #2d3748 !important; /* Dark background for login variant */
+
+}

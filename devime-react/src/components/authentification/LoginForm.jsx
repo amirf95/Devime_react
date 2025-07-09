@@ -62,12 +62,13 @@ function Login() {
 
   return (
     <>
-      <NavBar />
+      <NavBar variant="login"/>
       <div className="login-container">
         <h2>Connexion</h2>
         {message && <p>{message}</p>}
         <form onSubmit={handleSubmit}>
-          <input
+          <input 
+            className='login-input'
             name="username"
             placeholder="Nom d'utilisateur"
             value={credentials.username}
@@ -75,6 +76,7 @@ function Login() {
             required
           />
           <input
+            className='login-input'
             name="password"
             type="password"
             placeholder="Mot de passe"
