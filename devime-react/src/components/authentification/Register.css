@@ -66,3 +66,34 @@
   color: #d32f2f; /* Red for error messages */
   font-weight: bold;
 }
+.input-register {
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #e0e7f0;
+}
+.input-register:hover {
+  border-color: #ffc107; /* Yellow border on hover */
+  background-color: #f0f4f8; /* Lighter background on hover */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transform: scale(1.02); /* Slightly larger on hover */
+}
+.submit-button {
+  padding: 12px;
+  background-color: #ffc107; /* Yellow from buttons in image */
+  color: #ffffff;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.submit-button:hover {
+  background-color: #f5ca0b; /* Darker yellow on hover */
+  transform: scale(1.05); /* Slightly larger on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow on hover */
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  border: #000000 1px solid; /* Black border on hover */
+}

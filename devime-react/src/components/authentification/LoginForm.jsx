@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Login.css';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../NavBar';
+import Footer from '../Footer';
 
 function Login() {
   const [credentials, setCredentials] = useState({
@@ -59,28 +61,32 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
-      <h2>Connexion</h2>
-      {message && <p>{message}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          name="username"
-          placeholder="Nom d'utilisateur"
-          value={credentials.username}
-          onChange={handleChange}
-          required
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Mot de passe"
-          value={credentials.password}
-          onChange={handleChange}
-          required
-        />
-        <button type="submit">Se connecter</button>
-      </form>
-    </div>
+    <>
+      <NavBar />
+      <div className="login-container">
+        <h2>Connexion</h2>
+        {message && <p>{message}</p>}
+        <form onSubmit={handleSubmit}>
+          <input
+            name="username"
+            placeholder="Nom d'utilisateur"
+            value={credentials.username}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Mot de passe"
+            value={credentials.password}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit">Se connecter</button>
+        </form>
+      </div>
+      <Footer/>
+    </>
   );
 }
 

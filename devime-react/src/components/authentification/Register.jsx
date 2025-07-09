@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Register.css';
+import NavBar from '../NavBar';
+import Footer from '../Footer';
 
 function Register() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
+    phoneNumber: '',
     password1: '',
     password2: '',
     role: 'client',
@@ -53,6 +56,7 @@ function Register() {
       setFormData({
         username: '',
         email: '',
+        phoneNumber: '',
         password1: '',
         password2: '',
         role: 'client',
@@ -69,18 +73,20 @@ function Register() {
   };
 
   return (
+    <>
+    <NavBar />
     <div className="register-container">
       <h2>Créer un compte</h2>
       {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
-        <input
+        <input className='input-register'
           name="username"
           placeholder="Nom d'utilisateur"
           value={formData.username}
           onChange={handleChange}
           required
         />
-        <input
+        <input className='input-register'
           name="email"
           type="email"
           placeholder="Email"
@@ -88,7 +94,17 @@ function Register() {
           onChange={handleChange}
           required
         />
-        <input
+        <input className='input-register'
+          name="phoneNumber"
+          type="tel"
+          pattern="[0-9]{10}" // Format tunisien 10 chiffres
+          placeholder="Numéro de téléphone"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          required
+        />
+
+        <input className='input-register'
           name="password1"
           type="password"
           placeholder="Mot de passe"
@@ -96,7 +112,7 @@ function Register() {
           onChange={handleChange}
           required
         />
-        <input
+        <input className='input-register'
           name="password2"
           type="password"
           placeholder="Confirmer le mot de passe"
@@ -104,7 +120,7 @@ function Register() {
           onChange={handleChange}
           required
         />
-        <select
+        <select className='input-register'
           name="role"
           value={formData.role}
           onChange={handleChange}
@@ -113,9 +129,11 @@ function Register() {
           <option value="entrepreneur">Entrepreneur</option>
           <option value="admin">Admin</option>
         </select>
-        <button type="submit">S'inscrire</button>
+        <button className='submit-button' type="submit">S'inscrire</button>
       </form>
     </div>
+    <Footer />
+    </>
   );
 }
 
