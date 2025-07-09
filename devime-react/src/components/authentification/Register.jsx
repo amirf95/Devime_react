@@ -4,6 +4,10 @@ import './Register.css';
 import NavBar from '../NavBar';
 import Footer from '../Footer';
 import Swal from 'sweetalert2';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css'
+
+
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -139,15 +143,15 @@ function Register() {
           onChange={handleChange}
           required
         />
-        <input className='input-register'
-          name="phoneNumber"
-          type="tel"
-          pattern="[0-9]{10}" // Format tunisien 10 chiffres
-          placeholder="Numéro de téléphone"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          required
-        />
+        <PhoneInput
+  defaultCountry='TN'
+  placeholder="Numéro de téléphone"
+  value={formData.phoneNumber}
+  onChange={(value) =>
+    setFormData({ ...formData, phoneNumber: value })
+  }
+  required
+/>
 
         <input className='input-register'
           name="password1"
