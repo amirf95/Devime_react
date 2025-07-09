@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import NavBarDropDown from './NavBarDropDown';
+import './NavBar.css'; 
+
 
 function NavBar() {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleNavbar = () => {
     setIsCollapsed(!isCollapsed);
@@ -93,17 +97,32 @@ function NavBar() {
 
             {userInfo ? (
               <>
-                <li className="nav-item d-flex align-items-center">
-                  <a className="nav-link" href="#signin">
-                    <i className="fa-solid fa-user"></i>
-                    <span className="ms-2">{userInfo.username} ({userInfo.role})</span>
-                  </a>
-                </li>
+                <li className="nav-item">
+  {/* This div wraps the ENTIRE clickable user section */}
+  <div className="user-dropdown-container">
+  <div 
+    className="user-dropdown-trigger d-flex align-items-center" 
+    onClick={() => setDropdownOpen(!dropdownOpen)}  // Click handler here
+    style={{ cursor: 'pointer' }}
+  >
+    <i className="fa-solid fa-user"></i>
+    <span className="ms-2">
+      {userInfo.username} ({userInfo.role})
+    </span>
+    {/* Dropdown is now a sibling (not nested inside clickable area) */}
+    <NavBarDropDown 
+      isSignedIn={!!userInfo} 
+      onLogout={handleLogout}
+      isOpen={dropdownOpen} 
+    />
+  </div>
+  </div>
+</li>
                 <li className="nav-item">
                   <button
                     onClick={handleLogout}
                     className="btn btn-outline-light ms-3"
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer' , padding: '0.5rem 1rem'}}
                   >
                     Logout
                   </button>
@@ -119,6 +138,8 @@ function NavBar() {
                 </li>
               </>
             )}
+            
+
           </ul>
         </div>
       </div>

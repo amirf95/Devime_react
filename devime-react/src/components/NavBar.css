@@ -1,0 +1,21 @@
+.ms-2 {
+    padding: 0.5rem;
+}
+/*@media (max-width: 1200px) {
+    .nav-item.button {
+        margin: 0.5rem 0;
+    }
+}*//*to fix when screen is less than 1200 styles are shitty*/ 
+.user-dropdown-container {
+    color: #ccc;
+    position: relative;
+    display: inline-block;
+    padding: 0 0.5rem;
+}
+.user-dropdown-container:hover{
+    color: #fff;
+    outline: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    z-index: 1000;
+    cursor: pointer;
+}

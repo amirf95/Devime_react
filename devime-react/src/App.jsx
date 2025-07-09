@@ -1,15 +1,15 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import About from './components/About';
-import Clients from './components/Clients';
-import Contact from './components/Contact';
-import Examplaire from './components/Examplaire';
+import About from './components/homePage/About';
+import Clients from './components/homePage/Clients';
+import Contact from './components/homePage/Contact';
+import Examplaire from './components/homePage/Examplaire';
 import Footer from './components/Footer';
-import Header from './components/Header';
+import Header from './components/homePage/Header';
 import NavBar from './components/NavBar';
-import Services from './components/Services';
-import Team from './components/Team';
+import Services from './components/homePage/Services';
+import Team from './components/homePage/Team';
 import Login from './components/authentification/LoginForm';
 import Register from './components/authentification/Register';
 import UserProfile from './components/authentification/userprofil';
