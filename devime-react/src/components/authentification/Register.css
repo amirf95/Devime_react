@@ -97,3 +97,9 @@
   transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   border: #000000 1px solid; /* Black border on hover */
 }
+
+.PhoneInputCountryFlag {
+  border-radius: 50%;
+  border: 2px solid var(--PhoneInputCountryFlag-borderColor, #ffc107);
+}
+

@@ -4,7 +4,7 @@ import NavBarDropDown from './NavBarDropDown';
 import './NavBar.css'; 
 
 
-function NavBar() {
+function NavBar({ variant }) {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [userInfo, setUserInfo] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -71,9 +71,9 @@ function NavBar() {
       });
     };
   }, []);
-
+  
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <nav className={`navbar navbar-expand-lg navbar-dark fixed-top ${variant === 'login' ? 'login-navbar' : ''}`} id="mainNav">
       <div className="container">
         <a className="navbar-brand" href="/">Devime</a>
         <button

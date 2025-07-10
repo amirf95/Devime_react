@@ -9,7 +9,7 @@
   position: absolute;
   right: 0;
   top: 100%; /* Appears below the trigger */
-  background: #2d3748; /* Dark background (match navbar) */
+  background: #2d3748; /* to change background color */
   min-width: 160px;
   border-radius: 4px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
