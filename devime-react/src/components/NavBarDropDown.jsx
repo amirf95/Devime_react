@@ -18,7 +18,7 @@ const NavBarDropDown = ({ isSignedIn, onLogout, isOpen}) => {
           ) : (
             <>
               <li>
-                <a href="/account">My Account</a>
+                <a href="/profile">My Account</a>
               </li>
               <li>
                 <a href="/projects">My Projects</a>
