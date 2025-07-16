@@ -13,6 +13,7 @@ import Team from './components/homePage/Team';
 import Login from './components/authentification/LoginForm';
 import Register from './components/authentification/Register';
 import UserProfile from './components/authentification/userprofil';
+import Task0Form from "./components/estimation/Task0Form";
 
 function MainApp() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/*" element={<MainApp />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/estimation-tache0" element={<Task0Form />} />
 
       </Routes>
     </Router>
