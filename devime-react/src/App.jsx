@@ -13,6 +13,7 @@ import Team from './components/homePage/Team';
 import Login from './components/authentification/LoginForm';
 import Register from './components/authentification/Register';
 import UserProfile from './components/authentification/userprofil';
+import Chatbot from './components/Chatbot/ChatBot';
 
 function MainApp() {
   return (
@@ -26,6 +27,9 @@ function MainApp() {
       <Clients />
       <Contact />
       <Footer />
+      
+      <Chatbot />
+
     </>
   );
 }
