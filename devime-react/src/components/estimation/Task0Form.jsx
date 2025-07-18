@@ -14,6 +14,11 @@ const fouilleTypes = [
 ];
 
 const solOptions = [
+//   { value: 'terre_molle', label: 'Terre molle (5 – 18 €/m³)' },
+//   { value: 'terre_compacte', label: 'Terre compacte (10 – 25 €/m³)' },
+//   { value: 'roche_froide', label: 'Roche froide (60 – 240 €/m³)' },
+//   { value: 'sol_contamine', label: 'Sol contaminé (+10 – 30 €/m³)' },
+//   { value: 'transport_longue_distance', label: 'Transport longue distance (+5 – 20 €/m³)' },
   { value: 'argile', label: 'Argile' },
   { value: 'sable', label: 'Sable' },
   { value: 'limon', label: 'Limon' },
@@ -29,13 +34,28 @@ const terrassementOptions = [
 ];
 
 export default function Task0Form() {
+  const [selectedSols, setSelectedSols] = useState([]);
   const [fouilles, setFouilles] = useState([
-    { type_fouille: '', longueur: '', largeur: '', profondeur: '', diametre: '', prix_unitaire: '', nombre: 1 }
+    {
+      type_fouille: '',
+      longueur: '',
+      largeur: '',
+      profondeur: '',
+      diametre: '',
+      volume_supplementaire: '',
+      prix_unitaire: '',
+      nombre: 1
+    }
   ]);
-  const [sol, setSol] = useState('');
   const [terrassement, setTerrassement] = useState({ type_terrassement: '', prix_terrassement: '', description: '' });
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+
+  const handleSolChange = (value) => {
+    setSelectedSols(prev =>
+      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
+    );
+  };
 
   const handleFouilleChange = (index, field, value) => {
     const newFouilles = [...fouilles];
@@ -44,32 +64,42 @@ export default function Task0Form() {
   };
 
   const addFouille = () => {
-    setFouilles([...fouilles, { type_fouille: '', longueur: '', largeur: '', profondeur: '', diametre: '', prix_unitaire: '', nombre: 1 }]);
+    setFouilles([
+      ...fouilles,
+      {
+        type_fouille: '',
+        longueur: '',
+        largeur: '',
+        profondeur: '',
+        diametre: '',
+        volume_supplementaire: '',
+        prix_unitaire: '',
+        nombre: 1
+      }
+    ]);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      // Formatage des fouilles (parse float/int)
       const formattedFouilles = fouilles.map(f => ({
         type_fouille: f.type_fouille,
         longueur: f.longueur ? parseFloat(f.longueur) : null,
         largeur: f.largeur ? parseFloat(f.largeur) : null,
         profondeur: parseFloat(f.profondeur),
         diametre: f.diametre ? parseFloat(f.diametre) : null,
+        volume_supplementaire: f.volume_supplementaire ? parseFloat(f.volume_supplementaire) : null,
         prix_unitaire: parseFloat(f.prix_unitaire),
         nombre: parseInt(f.nombre),
-        // **NE PAS envoyer `estimation` ici**
       }));
 
-      // Payload avec noms attendus côté backend
       const payload = {
-        sol,
+        sols: selectedSols,
         fouilles: formattedFouilles,
         type_terrassement: terrassement.type_terrassement,
         prix_terrassement: parseFloat(terrassement.prix_terrassement),
-        description: terrassement.description
+        description_terrassement: terrassement.description
       };
 
       const res = await axios.post('http://localhost:8000/api/estimations/', payload);
@@ -92,76 +122,102 @@ export default function Task0Form() {
       <form onSubmit={handleSubmit}>
 
         <fieldset>
-          <legend>Type de sol</legend>
-          <select required value={sol} onChange={e => setSol(e.target.value)}>
-            <option value="">-- Choisir un sol --</option>
-            {solOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-          </select>
+          <legend>Types de sol</legend>
+          {solOptions.map(opt => (
+            <label key={opt.value} style={{ display: 'block' }}>
+              <input
+                type="checkbox"
+                checked={selectedSols.includes(opt.value)}
+                onChange={() => handleSolChange(opt.value)}
+              />
+              {opt.label}
+            </label>
+          ))}
         </fieldset>
 
         <fieldset>
           <legend>Fouilles</legend>
-          {fouilles.map((fouille, index) => (
-            <div key={index} className="fouille-group">
-              <h4>Fouille #{index + 1}</h4>
+          {fouilles.map((fouille, index) => {
+            const isPieuxOuPuits = ['pieux', 'puits'].includes(fouille.type_fouille);
+            const isTalus = fouille.type_fouille === 'talus';
 
-              <label>Type:</label>
-              <select
-                required
-                value={fouille.type_fouille}
-                onChange={e => handleFouilleChange(index, 'type_fouille', e.target.value)}
-              >
-                <option value="">-- Choisir un type --</option>
-                {fouilleTypes.map(ft => <option key={ft.value} value={ft.value}>{ft.label}</option>)}
-              </select>
+            return (
+              <div key={index} className="fouille-group">
+                <h4>Fouille #{index + 1}</h4>
 
-              <label>Longueur (m):</label>
-              <input
-                type="number" min="0" step="0.01"
-                value={fouille.longueur}
-                onChange={e => handleFouilleChange(index, 'longueur', e.target.value)}
-              />
+                <label>Type:</label>
+                <select
+                  required
+                  value={fouille.type_fouille}
+                  onChange={e => handleFouilleChange(index, 'type_fouille', e.target.value)}
+                >
+                  <option value="">-- Choisir un type --</option>
+                  {fouilleTypes.map(ft => <option key={ft.value} value={ft.value}>{ft.label}</option>)}
+                </select>
 
-              <label>Largeur (m):</label>
-              <input
-                type="number" min="0" step="0.01"
-                value={fouille.largeur}
-                onChange={e => handleFouilleChange(index, 'largeur', e.target.value)}
-              />
+                {!isPieuxOuPuits && (
+                  <>
+                    <label>Longueur (m):</label>
+                    <input
+                      type="number" min="0" step="0.01"
+                      value={fouille.longueur}
+                      onChange={e => handleFouilleChange(index, 'longueur', e.target.value)}
+                    />
 
-              <label>Profondeur (m):</label>
-              <input
-                type="number" min="0" step="0.01" required
-                value={fouille.profondeur}
-                onChange={e => handleFouilleChange(index, 'profondeur', e.target.value)}
-              />
+                    <label>Largeur (m):</label>
+                    <input
+                      type="number" min="0" step="0.01"
+                      value={fouille.largeur}
+                      onChange={e => handleFouilleChange(index, 'largeur', e.target.value)}
+                    />
+                  </>
+                )}
 
-              {['pieux', 'puits'].includes(fouille.type_fouille) && (
-                <>
-                  <label>Diamètre (m):</label>
-                  <input
-                    type="number" min="0" step="0.01" required
-                    value={fouille.diametre}
-                    onChange={e => handleFouilleChange(index, 'diametre', e.target.value)}
-                  />
-                </>
-              )}
+                <label>Profondeur (m):</label>
+                <input
+                  type="number" min="0" step="0.01" required
+                  value={fouille.profondeur}
+                  onChange={e => handleFouilleChange(index, 'profondeur', e.target.value)}
+                />
 
-              <label>Prix unitaire (€):</label>
-              <input
-                type="number" min="0" step="0.01" required
-                value={fouille.prix_unitaire}
-                onChange={e => handleFouilleChange(index, 'prix_unitaire', e.target.value)}
-              />
+                {isPieuxOuPuits && (
+                  <>
+                    <label>Diamètre (m):</label>
+                    <input
+                      type="number" min="0" step="0.01" required
+                      value={fouille.diametre}
+                      onChange={e => handleFouilleChange(index, 'diametre', e.target.value)}
+                    />
+                  </>
+                )}
 
-              <label>Nombre:</label>
-              <input
-                type="number" min="1"
-                value={fouille.nombre}
-                onChange={e => handleFouilleChange(index, 'nombre', e.target.value)}
-              />
-            </div>
-          ))}
+                {isTalus && (
+                  <>
+                    <label>Volume supplémentaire selon pente (m³):</label>
+                    <input
+                      type="number" min="0" step="0.01"
+                      value={fouille.volume_supplementaire}
+                      onChange={e => handleFouilleChange(index, 'volume_supplementaire', e.target.value)}
+                    />
+                  </>
+                )}
+
+                <label>Prix unitaire (€):</label>
+                <input
+                  type="number" min="0" step="0.01" required
+                  value={fouille.prix_unitaire}
+                  onChange={e => handleFouilleChange(index, 'prix_unitaire', e.target.value)}
+                />
+
+                <label>Nombre:</label>
+                <input
+                  type="number" min="1"
+                  value={fouille.nombre}
+                  onChange={e => handleFouilleChange(index, 'nombre', e.target.value)}
+                />
+              </div>
+            );
+          })}
           <button type="button" onClick={addFouille}>+ Ajouter une fouille</button>
         </fieldset>
 
@@ -199,10 +255,23 @@ export default function Task0Form() {
 
       {result && (
         <div className="result-box" style={{ marginTop: 20, padding: 10, border: '1px solid #ccc' }}>
-          <h3>Résultat de l’estimation</h3>
-          <p>Volume total de fouilles : {result.volume_total_fouilles} m³</p>
-          <p>Prix total fouilles : {result.prix_total_fouilles} €</p>
-          <p>Prix total estimation : {result.prix_total} €</p>
+          <h3>📋 Bilan de l’estimation</h3>
+          <p>🧱 <strong>Types de sol :</strong> {result.sols.join(', ')}</p>
+          <p>🚧 <strong>Type de terrassement :</strong> {result.type_terrassement}</p>
+          <p>📝 <strong>Description terrassement :</strong> {result.description_terrassement}</p>
+          <p>💰 <strong>Prix terrassement :</strong> {result.prix_terrassement} €</p>
+
+          <h4>🕳️ Fouilles :</h4>
+          <ul>
+            {result.fouilles.map((f, i) => (
+              <li key={i}>
+                - Fouille #{i + 1} : {f.type_fouille} (x{f.nombre}) — volume {f.volume.toFixed(2)} m³, prix total {f.prix_total.toFixed(2)} €
+              </li>
+            ))}
+          </ul>
+
+          <p>💰 <strong>Total fouilles :</strong> {result.prix_total_fouilles} €</p>
+          <p>💵 <strong>Total estimation :</strong> {result.prix_total} €</p>
         </div>
       )}
     </div>
