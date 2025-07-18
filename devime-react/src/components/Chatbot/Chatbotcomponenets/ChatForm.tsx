@@ -14,7 +14,13 @@ const ChatForm = ({ setChatHistory, chatHistory, generateBotResponse }: Props) =
   const [inputValue, setInputValue] = useState("");
 
   const handleSubmit = async (userMessage: string) => {
-    const updatedHistory = [...chatHistory, { role: "user", text: userMessage }];
+    // Corrected message structure - using 'response' instead of 'text'
+    const newMessage: Message = {
+      role: "user",
+      response: userMessage // or { text: userMessage } if you prefer the object format
+    };
+    
+    const updatedHistory = [...chatHistory, newMessage];
     setChatHistory(updatedHistory);
     setTimeout(() => generateBotResponse(updatedHistory), 100);
   };

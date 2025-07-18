@@ -14,7 +14,9 @@ const ChatMessage = ({ chat }: ChatMessageProps) => {
       } ${chat.isError ? styles.error : ""}`}
     >
       {chat.role === "model" && <ChatbotIcon size={35} color="#fff" />}
-      <p className={styles["message-text"]}>{chat.text}</p>
+      <p className={styles["message-text"]}>
+        {typeof chat.response === "string" ? chat.response : chat.response?.text || "No response available"}
+      </p>
     </div>
   );
 };
