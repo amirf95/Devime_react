@@ -1,6 +1,6 @@
 import { Message } from "../ChatBot";
 import { ChatbotIcon } from "./ChatbotIcon";
-import styles from "../Chatbot.module.css";
+import  "../Chatbot.css";
 
 interface ChatMessageProps {
   chat: Message;
@@ -9,12 +9,12 @@ interface ChatMessageProps {
 const ChatMessage = ({ chat }: ChatMessageProps) => {
   return (
     <div
-      className={`${styles.message} ${
-        chat.role === "model" ? styles["bot-message"] : styles["user-message"]
-      } ${chat.isError ? styles.error : ""}`}
+      className={`message ${
+        chat.role === "model" ? "bot-message" : "user-message"
+      } ${chat.isError ? "error" : ""}`}
     >
       {chat.role === "model" && <ChatbotIcon size={35} color="#fff" />}
-      <p className={styles["message-text"]}>
+      <p className="message-text">
         {typeof chat.response === "string" ? chat.response : chat.response?.text || "No response available"}
       </p>
     </div>

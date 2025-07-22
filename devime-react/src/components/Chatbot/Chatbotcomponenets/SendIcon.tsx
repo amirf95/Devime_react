@@ -1,20 +1,6 @@
-import { CSSProperties } from "react";
+import React from "react";
 
-interface SendIconProps {
-  width?: number;
-  height?: number;
-  color?: string;
-  className?: string;
-  style?: CSSProperties;
-}
-
-export const SendIcon = ({
-  width = 25,
-  height = 25,
-  color = "currentColor",
-  className = "",
-  style = {},
-}: SendIconProps) => {
+const SendIcon = ({ width = 25, height = 25, color = "currentColor", className = "", style = {} }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -31,3 +17,5 @@ export const SendIcon = ({
     </svg>
   );
 };
+
+export default SendIcon;

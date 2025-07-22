@@ -1,7 +1,7 @@
 import { useRef, useState, FormEvent, KeyboardEvent } from "react";
 import { Message } from "../ChatBot";
-import { SendIcon } from "./SendIcon";
-import styles from "../Chatbot.module.css";
+import  "../Chatbot.css";
+import { Send } from "lucide-react";
 
 interface Props {
   chatHistory: Message[];
@@ -51,23 +51,25 @@ const ChatForm = ({ setChatHistory, chatHistory, generateBotResponse }: Props) =
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className={styles["chat-form"]}>
+    <form onSubmit={handleFormSubmit} className="chat-form">
       <input
         ref={inputRef}
         type="text"
         placeholder="Message..."
-        className={styles["message-input"]}
+        className="message-input"
         aria-label="Chat message input"
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
       />
       <button
         type="submit"
-        className={styles["send-button"]}
+        className="send-button"
         aria-label="Send message"
         disabled={!inputValue.trim()}
       >
-        <SendIcon width={25} height={25} color="#fff" />
+        <div className="SEND" style={{ background: "#e6b800", borderRadius: "50%", padding: 10 }}>
+          <Send />
+        </div>
       </button>
     </form>
   );

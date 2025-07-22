@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import styles from "./ChatBot.module.css";
-
+import "./ChatBot.css";
 import ChatForm from "./Chatbotcomponenets/ChatForm";
 import ChatMessage from "./Chatbotcomponenets/ChatMessage";
 import { CloseIcon } from "./Chatbotcomponenets/CloseIcon";
@@ -99,7 +98,7 @@ const generateBotResponse = async (history: Message[]) => {
 
     const data = await response.json();
     console.log("✅ Received from backend:", data);
-    
+
     setChatHistory((prev) => [
       ...prev.filter((msg) => msg.response !== "Thinking..."),
       data,
@@ -118,36 +117,34 @@ const generateBotResponse = async (history: Message[]) => {
   }
 };
 
-
-
   const toggleChatbot = () => {
     setShowChatbot(!showChatbot);
   };
 
   return (
-    <div className={`${styles.container} ${showChatbot ? styles["show-chatbot"] : ""}`}>
-      <button className={styles.toggler} onClick={toggleChatbot}>
-        <span className={`${styles.icon} ${styles["chat-icon"]}`}>💬</span>
-        <span className={`${styles.icon} ${styles["close-icon"]}`}>✕</span>
+    <div className={`container ${showChatbot ? "show-chatbot" : ""}`}>
+      <button className="toggler" onClick={toggleChatbot}>
+        <span className={`icon chat-icon`}>💬</span>
+        <span className={`icon close-icon`}>✕</span>
       </button>
-      <div className={styles.popup}>
-        <div className={styles.header}>
-          <div className={styles["header-info"]}>
+      <div className="popup">
+        <div className="header">
+          <div className="header-info">
             <ChatbotIcon size={35} color="#fff" />
-            <span className={styles["logo-text"]}>Chatbot</span>
+            <span className="logo-text">Chatbot</span>
           </div>
-          <button onClick={toggleChatbot} className={styles["close-button"]}>
+          <button onClick={toggleChatbot} className="close-button">
             <CloseIcon size={24} color="#fff" />
           </button>
         </div>
-        <div className={styles["chat-body"]} ref={chatBodyRef}>
+        <div className="chat-body" ref={chatBodyRef}>
         <ErrorBoundary>
           {chatHistory.map((msg, idx) => (
             <ChatMessage key={idx} chat={msg} />
           ))}
         </ErrorBoundary>
         </div>
-        <div className={styles.footer}>
+        <div className="footer">
           <ChatForm
             chatHistory={chatHistory}
             setChatHistory={setChatHistory}
