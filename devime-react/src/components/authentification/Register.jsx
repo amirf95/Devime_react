@@ -13,11 +13,12 @@ function Register() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
-    phoneNumber: '',
+    phone_number: '',
     password1: '',
     password2: '',
     role: 'client',
   });
+
 
 
   const [csrfToken, setCsrfToken] = useState('');
@@ -78,7 +79,7 @@ function Register() {
         setFormData({
           username: '',
           email: '',
-          phoneNumber: '',
+          phone_number: '',  // ✅ ici aussi
           password1: '',
           password2: '',
           role: 'client',
@@ -124,7 +125,7 @@ function Register() {
 
   return (
     <>
-      <NavBar />
+      <NavBar variant="login"/>
       <div className="register-container">
         <h2>Créer un compte</h2>
         <form onSubmit={handleSubmit}>
@@ -146,9 +147,9 @@ function Register() {
           <PhoneInput
             defaultCountry='TN'
             placeholder="Numéro de téléphone"
-            value={formData.phoneNumber}
+            value={formData.phone_number}
             onChange={(value) =>
-              setFormData({ ...formData, phoneNumber: value })
+              setFormData({ ...formData, phone_number: value })
             }
             required
           />

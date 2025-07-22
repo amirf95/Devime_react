@@ -118,7 +118,7 @@ export default function UserProfile() {
 
   return (
     <div className="user-profile-container">
-            <NavBar />
+      <NavBar variant="login"/>
 
       <h2 className="user-profile-title">Mon Profil</h2>
 
@@ -133,16 +133,18 @@ export default function UserProfile() {
         <input className="user-profile-input" name="email" type="email" placeholder="Email" value={profile.email} onChange={handleChange} />
         <input className="user-profile-input" name="phone_number" placeholder="Téléphone" value={profile.phone_number || ''} onChange={handleChange} />
         <input className="user-profile-input" value={profile.role} disabled />
-        <button type="submit" className="user-profile-button">💾 Mettre à jour</button>
-      </form>
+        <button type="submit" className="user-profile-button">
+          💾 <span>Mettre à jour</span>
+        </button>      </form>
 
       <h3 className="user-profile-subtitle">Changer le mot de passe</h3>
       <form onSubmit={handleChangePassword} className="user-profile-form">
         <input className="user-profile-input" name="old_password" type="password" placeholder="Ancien mot de passe" value={passwordData.old_password} onChange={handlePasswordChange} />
         <input className="user-profile-input" name="new_password1" type="password" placeholder="Nouveau mot de passe" value={passwordData.new_password1} onChange={handlePasswordChange} />
         <input className="user-profile-input" name="new_password2" type="password" placeholder="Confirmer le mot de passe" value={passwordData.new_password2} onChange={handlePasswordChange} />
-        <button type="submit" className="user-profile-button">🔒 Modifier mot de passe</button>
-      </form>
+        <button type="submit" className="user-profile-button">
+          🔒 <span>Modifier mot de passe</span>
+        </button>      </form>
     </div>
   );
 }
