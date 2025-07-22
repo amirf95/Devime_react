@@ -11,10 +11,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "js-cookie": "^3.0.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-helmet": "^6.1.0",
     "react-phone-number-input": "^3.4.12",
+    "react-select": "^5.10.2",
     "sweetalert2": "^11.22.2"
   },
   "devDependencies": {
