@@ -17,6 +17,7 @@ import Task0Form from "./components/estimation/Task0Form";
 import EntrepreneurPrixPage from "./components/estimation/EntrepreneurPrixPage";
 
 
+import Chatbot from './components/Chatbot/ChatBot';
 function MainApp() {
   return (
     <>
@@ -29,6 +30,9 @@ function MainApp() {
       <Clients />
       <Contact />
       <Footer />
+      
+      <Chatbot />
+
     </>
   );
 }
