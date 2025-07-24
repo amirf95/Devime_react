@@ -5,6 +5,7 @@ import ChatMessage from "./Chatbotcomponenets/ChatMessage";
 import { CloseIcon } from "./Chatbotcomponenets/CloseIcon";
 import { ChatbotIcon } from "./Chatbotcomponenets/ChatbotIcon";
 import ErrorBoundary from "./Chatbotcomponenets/ErrorBoundary";
+import { Send } from "lucide-react";
 
 
 export interface textResponse     {

@@ -1,5 +1,5 @@
-import styles from "../ChatBot.css";
+import  "../ChatBot.css";
 
 export const Chatbottof = ({ children }: { children: React.ReactNode }) => {
-  return <div className={styles.Chatbottof}>{children}</div>;
+  return <div className="Chatbottof">{children}</div>;
 };
