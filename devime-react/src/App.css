@@ -681,7 +681,7 @@ progress {
     max-width: 1140px;
   }
 }
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .container-xxl, .container-xl, .container-lg, .container-md, .container-sm, .container {
     max-width: 1320px;
   }
@@ -1589,7 +1589,7 @@ progress {
     --bs-gutter-y: 3rem;
   }
 }
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .col-xxl {
     flex: 1 0 0%;
   }
@@ -3363,7 +3363,7 @@ textarea.form-control-lg {
     left: auto;
   }
 }
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .dropdown-menu-xxl-start {
     --bs-position: start;
   }
@@ -4065,7 +4065,7 @@ textarea.form-control-lg {
     overflow-y: visible;
   }
 }
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .navbar-expand-xxl {
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -5006,7 +5006,7 @@ textarea.form-control-lg {
     border-left-width: var(--bs-list-group-border-width);
   }
 }
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .list-group-horizontal-xxl {
     flex-direction: row;
   }
@@ -6506,7 +6506,7 @@ textarea.form-control-lg {
     visibility: visible;
   }
 }
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .offcanvas-xxl {
     --bs-offcanvas-height: auto;
     --bs-offcanvas-border-width: 0;
@@ -6880,7 +6880,7 @@ textarea.form-control-lg {
     z-index: 1020;
   }
 }
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .sticky-xxl-top {
     position: sticky;
     top: 0;
@@ -7705,6 +7705,7 @@ textarea.form-control-lg {
 
 .ms-2 {
   margin-left: 0.5rem !important;
+  text-align: center;
 }
 
 .ms-3 {
@@ -10303,7 +10304,7 @@ textarea.form-control-lg {
     text-align: center !important;
   }
 }
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .float-xxl-start {
     float: left !important;
   }
@@ -10932,6 +10933,7 @@ p {
   font-size: 0.95rem;
   color: #fff;
   letter-spacing: 0.0625em;
+  text-align: center;
 }
 #mainNav .navbar-nav .nav-item .nav-link.active, #mainNav .navbar-nav .nav-item .nav-link:hover {
   color: #ffc800;

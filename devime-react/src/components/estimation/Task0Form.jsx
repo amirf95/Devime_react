@@ -123,25 +123,30 @@ export default function Task0Form() {
     <NavBar variant="login"/>
     <Chatbot />
     <div className="form-container">
-      <h2>Estimation - Tâche 0</h2>
+      <h1>Estimation de travaux</h1>
+      <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
+      <p>Tous les champs sont obligatoires.</p>
+      <h2>I) Estimation - Tâche 0</h2>
       <form onSubmit={handleSubmit}>
 
         <fieldset>
-          <legend>Types de sol</legend>
-          {solOptions.map(opt => (
-            <label key={opt.value} style={{ display: 'block' }}>
-              <input
-                type="checkbox"
-                checked={selectedSols.includes(opt.value)}
-                onChange={() => handleSolChange(opt.value)}
-              />
-              {opt.label}
-            </label>
-          ))}
-        </fieldset>
-
+  <legend>1) Types de sol</legend>
+  {solOptions.map(opt => (
+    <div className="checkbox-group" key={opt.value}>
+      <label className="checkbox-label">
+        {opt.label}
+        <input
+          type="checkbox"
+          checked={selectedSols.includes(opt.value)}
+          onChange={() => handleSolChange(opt.value)}
+        />
+        
+      </label>
+    </div>
+  ))}
+</fieldset>
         <fieldset>
-          <legend>Fouilles</legend>
+          <legend>2) Fouilles</legend>
           {fouilles.map((fouille, index) => {
             const isPieuxOuPuits = ['pieux', 'puits'].includes(fouille.type_fouille);
             const isTalus = fouille.type_fouille === 'talus';
@@ -227,7 +232,7 @@ export default function Task0Form() {
         </fieldset>
 
         <fieldset>
-          <legend>Terrassement</legend>
+          <legend>3) Terrassement</legend>
 
           <label>Type de terrassement:</label>
           <select
