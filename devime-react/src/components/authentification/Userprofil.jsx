@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './UserProfile.css';
 import NavBar from '../NavBar';  // <-- ici l'import relatif
+import Footer from '../Footer';
+import Chatbot from '../Chatbot/ChatBot';
 
 function getCookie(name) {
   let cookieValue = null;
@@ -117,8 +119,12 @@ export default function UserProfile() {
   if (loading) return <p>Chargement...</p>;
 
   return (
+  
+    <>
+    <NavBar variant="login"/>
+    
     <div className="user-profile-container">
-      <NavBar variant="login"/>
+      
 
       <h2 className="user-profile-title">Mon Profil</h2>
 
@@ -145,6 +151,10 @@ export default function UserProfile() {
         <button type="submit" className="user-profile-button">
           🔒 <span>Modifier mot de passe</span>
         </button>      </form>
+        
     </div>
+    <Chatbot />
+    <Footer />
+    </>
   );
 }

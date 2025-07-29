@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './Task0Form.css';
+import NavBar from '../NavBar';
+import Chatbot from '../Chatbot/ChatBot';
 
 const fouilleTypes = [
   { value: 'pleine_masse', label: 'Fouille en pleine masse' },
@@ -117,6 +119,9 @@ export default function Task0Form() {
   };
 
   return (
+    <>
+    <NavBar variant="login"/>
+    <Chatbot />
     <div className="form-container">
       <h2>Estimation - Tâche 0</h2>
       <form onSubmit={handleSubmit}>
@@ -275,5 +280,6 @@ export default function Task0Form() {
         </div>
       )}
     </div>
+    </>
   );
 }
