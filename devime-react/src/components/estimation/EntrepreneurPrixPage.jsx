@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import './EntrepreneurPrixPage.css';
+import NavBar from '../NavBar';  // <-- ici l'import relatif
 
-
-// Fonction pour récupérer le cookie csrf token
+// Fonction pour récupérer le cookie CSRF
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -23,20 +23,22 @@ function MateriauxEntrepreneur() {
     const [materiaux, setMateriaux] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [successMessage, setSuccessMessage] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [categories, setCategories] = useState([]);
+    const [selectedCategorie, setSelectedCategorie] = useState('');
 
-    // On garde une copie des prix initiaux pour comparer les modifs
     const originalPrices = useRef({});
 
     useEffect(() => {
         fetchMateriaux();
+        fetchCategories();
     }, []);
 
     useEffect(() => {
-        // Avant de quitter la page, on vérifie si des modifs non sauvegardées existent
         const handleBeforeUnload = (e) => {
             if (hasUnsavedChanges()) {
                 e.preventDefault();
-                e.returnValue = ''; // Nécessaire pour certains navigateurs
+                e.returnValue = '';
                 return '';
             }
         };
@@ -49,13 +51,10 @@ function MateriauxEntrepreneur() {
             const response = await axios.get('http://localhost:8000/api/materiaux/materiaux-entrepreneur/', {
                 withCredentials: true,
             });
-            console.log(response.data);
-
 
             setMateriaux(response.data);
             setIsLoading(false);
 
-            // Initialiser la copie des prix initiaux
             const pricesMap = {};
             response.data.forEach(m => {
                 pricesMap[m.id] = m.prix_personnalise;
@@ -67,7 +66,17 @@ function MateriauxEntrepreneur() {
         }
     };
 
-    // Vérifie s'il y a des prix personnalisés modifiés non enregistrés
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get('http://localhost:8000/api/materiaux/categories-liste/', {
+                withCredentials: true,
+            });
+            setCategories(response.data);
+        } catch (error) {
+            console.error("Erreur chargement des catégories :", error);
+        }
+    };
+
     const hasUnsavedChanges = () => {
         return materiaux.some(m => originalPrices.current[m.id] !== m.prix_personnalise);
     };
@@ -99,9 +108,8 @@ function MateriauxEntrepreneur() {
                     }
                 }
             );
-            // Mettre à jour le prix original après sauvegarde
-            originalPrices.current[materiau.id] = materiau.prix_personnalise;
 
+            originalPrices.current[materiau.id] = materiau.prix_personnalise;
             setSuccessMessage(`✅ Prix personnalisé enregistré pour "${materiau.nom}"`);
             setTimeout(() => setSuccessMessage(''), 3000);
             fetchMateriaux();
@@ -115,11 +123,33 @@ function MateriauxEntrepreneur() {
 
     return (
         <div className="entrepreneur-prix-page">
+                          <NavBar variant="login"/>
 
             <div style={{ maxWidth: '900px', margin: 'auto', padding: '20px' }}>
                 <h2>Mes Matériaux</h2>
 
-                {/* Toast notification en haut à droite */}
+                {/* ✅ Zone de recherche */}
+                <div className="recherche-wrapper">
+                    <input
+                        type="text"
+                        placeholder="🔍 Rechercher par nom, prix ou catégorie"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="input-recherche"
+                    />
+                    <select
+                        value={selectedCategorie}
+                        onChange={(e) => setSelectedCategorie(e.target.value)}
+                        className="select-categorie"
+                    >
+                        <option value="">Toutes les catégories</option>
+                        {categories.map((cat) => (
+                            <option key={cat.id} value={cat.nom}>{cat.nom}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* ✅ Notification */}
                 {successMessage && (
                     <div style={{
                         position: 'fixed',
@@ -148,42 +178,51 @@ function MateriauxEntrepreneur() {
                         </tr>
                     </thead>
                     <tbody>
-                        {materiaux.map((m, index) => {
-                            const isModified = originalPrices.current[m.id] !== m.prix_personnalise;
-                            return (
-                                <tr key={m.id} className={isModified ? "modified" : ""}>
-                                    <td>{m.nom}</td>
-                                    <td>{m.categorie}</td>
-                                    <td>{m.prix_standard} DT</td>
-                                    <td>
-                                        <input
-                                            type="number"
-                                            value={m.prix_personnalise !== null ? m.prix_personnalise : ''}
-                                            onChange={(e) => handleChange(index, e.target.value)}
-                                            className="input-prix"
-                                        />
-                                    </td>
-                                    <td>
-                                        <button
-                                            onClick={() => handleSave(m)}
-                                            disabled={!isModified}
-                                            className="btn-enregistrer"
-                                        >
-                                            Enregistrer
-                                        </button>
-                                    </td>
-                                </tr>
-                            )
-                        })}
+                        {materiaux
+                            .filter(m => {
+                                const search = searchTerm.toLowerCase();
+                                const matchSearch =
+                                    m.nom.toLowerCase().includes(search) ||
+                                    m.categorie.toLowerCase().includes(search) ||
+                                    (m.prix_standard && m.prix_standard.toString().includes(search)) ||
+                                    (m.prix_personnalise && m.prix_personnalise.toString().includes(search));
+
+                                const matchCategorie = selectedCategorie === '' || m.categorie === selectedCategorie;
+
+                                return matchSearch && matchCategorie;
+                            })
+                            .map((m, index) => {
+                                const isModified = originalPrices.current[m.id] !== m.prix_personnalise;
+                                return (
+                                    <tr key={m.id} className={isModified ? "modified" : ""}>
+                                        <td>{m.nom}</td>
+                                        <td>{m.categorie}</td>
+                                        <td>{m.prix_standard} DT</td>
+                                        <td>
+                                            <input
+                                                type="number"
+                                                value={m.prix_personnalise !== null ? m.prix_personnalise : ''}
+                                                onChange={(e) => handleChange(index, e.target.value)}
+                                                className="input-prix"
+                                            />
+                                        </td>
+                                        <td>
+                                            <button
+                                                onClick={() => handleSave(m)}
+                                                disabled={!isModified}
+                                                className="btn-enregistrer"
+                                            >
+                                                Enregistrer
+                                            </button>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
                     </tbody>
                 </table>
             </div>
         </div>
-
     );
 }
-
-const th = { padding: '10px', borderBottom: '1px solid #ccc' };
-const td = { padding: '10px', borderBottom: '1px solid #eee' };
 
 export default MateriauxEntrepreneur;
