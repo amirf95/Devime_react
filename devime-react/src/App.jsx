@@ -16,6 +16,9 @@ import UserProfile from './components/authentification/userprofil';
 import Task0Form from "./components/estimation/Task0Form";
 import EntrepreneurPrixPage from "./components/estimation/EntrepreneurPrixPage";
 import EstimationGrosBetonForm from './components/estimation/EstimationGrosBetonForm';
+import EstimationSemelles from './components/estimation/EstimationSemelles'
+
+
 
 import Chatbot from './components/Chatbot/ChatBot';
 function MainApp() {
@@ -48,6 +51,9 @@ function App() {
         <Route path="/estimation-tache0" element={<Task0Form />} />
         <Route path="/prix-page" element={<EntrepreneurPrixPage />} />
         <Route path="/EstimationGrosBetonForm" element={<EstimationGrosBetonForm />} />
+        <Route path="/EstimationSemelles" element={<EstimationSemelles />} />
+
+        
 
       </Routes>
     </Router>
