@@ -1,5 +1,8 @@
+import { Link } from 'react-router-dom';
+
+
 function Services() {
-    return(
+    return (
         <section id="services">
             <div className="container">
                 <div className="text-center">
@@ -18,21 +21,23 @@ function Services() {
                         </div>
                     </div>
 
-      
-                    <div className="col-md-6">
-                        <div className="devis-card">
+
+                    <Link to="/estimation-tache0" className="col-md-6" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <div className="devis-card" style={{ cursor: 'pointer' }}>
                             <span className="fa-stack fa-4x">
                                 <i className="fas fa-circle fa-stack-2x text-warning"></i>
                                 <i className="fas fa-file-invoice-dollar fa-stack-1x fa-inverse"></i>
                             </span>
-                            <h4 className="my-3">Devis professionelle </h4>
-                            <p className="text-muted">Recevez un devis détaillé et précis basé sur des informations complètes et spécifiques à votre projet.</p>
+                            <h4 className="my-3">Devis professionnelle</h4>
+                            <p className="text-muted">
+                                Recevez un devis détaillé et précis basé sur des informations complètes et spécifiques à votre projet.
+                            </p>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </div>
         </section>
     )
-    
+
 }
 export default Services
