@@ -18,6 +18,8 @@ import EntrepreneurPrixPage from "./components/estimation/EntrepreneurPrixPage";
 import EstimationGrosBetonForm from './components/estimation/EstimationGrosBetonForm';
 import EstimationSemelles from './components/estimation/EstimationSemelles'
 
+// import Unauthorized from './components/authentification/Unauthorized';
+
 
 
 import Chatbot from './components/Chatbot/ChatBot';
@@ -54,6 +56,7 @@ function App() {
         <Route path="/EstimationSemelles" element={<EstimationSemelles />} />
 
         
+        {/* <Route path="/Unauthorized" element={<Unauthorized />} /> */}
 
       </Routes>
     </Router>
