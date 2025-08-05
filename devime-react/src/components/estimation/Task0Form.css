@@ -101,6 +101,9 @@ fieldset {
   padding: 10px;
   margin-bottom: 10px;
   background-color: #fff;
+  
+}
+.fouille-group h4{
   border-left: 4px solid #ffc800;
 }
 .checkbox-label {
@@ -159,15 +162,16 @@ button {
 }
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 12px #cca000;
+  box-shadow: 0 3px 4px #cca000;
 }
 
 .result-box {
   margin-top: 20px;
-  background-color: #ffc800;
+  background-color: #fff;
   padding: 15px;
-  border: 1px solid #ffc800;
+  border: 2px solid #ffc800;
   border-radius: 8px;
+  border: #ffc800 ;
 }
 
 .error-box {
@@ -177,4 +181,15 @@ button:hover {
   padding: 10px;
   border: 1px solid red;
   border-radius: 8px;
+}
+.CircularProgressbar {
+  width: 100px;
+  height: 100px;
+  float: left;
+  position: fixed;
+  top : 100px;
+  right: 500px;
+  z-index: 1000;
+  color: #ffc800;
+  font-size: 20px;
 }

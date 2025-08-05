@@ -3,7 +3,11 @@ import axios from 'axios';
 import './Task0Form.css';
 import NavBar from '../NavBar';
 import Chatbot from '../Chatbot/ChatBot';
-
+import Footer from '../Footer';
+import { CircularProgressbar,buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import NavigationArrows from '../NavigationArrows';
+const percentage = 10;
 const fouilleTypes = [
   { value: 'pleine_masse', label: 'Fouille en pleine masse' },
   { value: 'rigole', label: 'Fouille en rigole' },
@@ -122,10 +126,28 @@ export default function Task0Form() {
     <>
     <NavBar variant="login"/>
     <Chatbot />
+    <div className='alignment'>
+       <CircularProgressbar value={percentage} text={`${percentage}%`} styles={buildStyles({
+          pathTransitionDuration: 0.5,
+          pathColor:'#ffc800',
+
+          textColor: '#ffc800',
+          backgroundColor: '#ffc800',
+           trail: {
+      // Trail color
+      stroke: '#d6d6d6',
+      // Whether to use rounded or flat corners on the ends - can use 'butt' or 'round'
+      strokeLinecap: 'butt',
+      // Rotate the trail
+      transform: 'rotate(0.25turn)',
+      transformOrigin: 'center center',
+    },
+       })} />;
     <div className="form-container">
       <h1>Estimation de travaux</h1>
       <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
       <p>Tous les champs sont obligatoires.</p>
+     
       <h2>I) Estimation - Tâche 0</h2>
       <form onSubmit={handleSubmit}>
 
@@ -265,26 +287,30 @@ export default function Task0Form() {
 
       {result && (
         <div className="result-box" style={{ marginTop: 20, padding: 10, border: '1px solid #ccc' }}>
-          <h3>📋 Bilan de l’estimation</h3>
-          <p>🧱 <strong>Types de sol :</strong> {result.sols.join(', ')}</p>
-          <p>🚧 <strong>Type de terrassement :</strong> {result.type_terrassement}</p>
-          <p>📝 <strong>Description terrassement :</strong> {result.description_terrassement}</p>
-          <p>💰 <strong>Prix terrassement :</strong> {result.prix_terrassement} €</p>
+          <h3> Bilan de l’estimation</h3>
+          <p> <strong>Types de sol :</strong> {result.sols.join(', ')}</p>
+          <p> <strong>Type de terrassement :</strong> {result.type_terrassement}</p>
+          <p> <strong>Description terrassement :</strong> {result.description_terrassement}</p>
+          <p> <strong>Prix terrassement :</strong> {result.prix_terrassement} €</p>
 
-          <h4>🕳️ Fouilles :</h4>
+          <h4> Fouilles :</h4>
           <ul>
             {result.fouilles.map((f, i) => (
               <li key={i}>
-                - Fouille #{i + 1} : {f.type_fouille} (x{f.nombre}) — volume {f.volume.toFixed(2)} m³, prix total {f.prix_total.toFixed(2)} €
+                Fouille {i + 1} : {f.type_fouille} (x{f.nombre}) — volume {f.volume.toFixed(2)} m³, prix total {f.prix_total.toFixed(2)} €
               </li>
             ))}
           </ul>
 
-          <p>💰 <strong>Total fouilles :</strong> {result.prix_total_fouilles} €</p>
-          <p>💵 <strong>Total estimation :</strong> {result.prix_total} €</p>
+          <p> <strong>Cout total fouilles :</strong> {result.prix_total_fouilles} €</p>
+          <p> <strong>Total estimation :</strong> {result.prix_total} €</p>
         </div>
       )}
     </div>
+    <NavigationArrows />
+    </div>
+    
+    <Footer/>
     </>
   );
 }

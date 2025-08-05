@@ -1,0 +1,17 @@
+.buttons-container {
+  position: relative;
+  height: 100px;
+} 
+.previous-button-container {
+    position: absolute;
+    left: 60px;
+    top: 95%;
+    transform: translateY(-50%);
+}
+
+.next-button-container {
+    position: absolute;
+    right: 60px;
+    top: 95%;
+    transform: translateY(-50%);
+}
