@@ -439,7 +439,10 @@ export default function SemelleGroup() {
             <NavBar variant="login" />
             <Chatbot />
             <div className='alignment'>
-                <CircularProgressbar value={percentage} text={`${percentage}%`} styles={buildStyles({
+                <CircularProgressbar 
+                value={percentage} 
+                text={`${percentage}%`} 
+                styles={buildStyles({
                     pathTransitionDuration: 0.5,
                     pathColor: '#ffc800',
                     textColor: '#ffc800',
@@ -455,7 +458,7 @@ export default function SemelleGroup() {
                     <h1>Estimation de travaux</h1>
                     <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
                     <p>Tous les champs sont obligatoires.</p>
-                    <h2>II) Semelles - Tâche 1</h2>
+                    <h2>II) Semelles - Tâche 1.1</h2>
                     {/*
                     <form >
                         <fieldset>
