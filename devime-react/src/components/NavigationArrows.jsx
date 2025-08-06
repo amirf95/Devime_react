@@ -1,8 +1,6 @@
-// SurveyNavigator.jsx
 import { useNavigate, useLocation } from "react-router-dom";
-import "./NavigationArrows.css"
 
-const steps = ["/estimation-tache0", "/estimation-tache1", "/estimation-tache2"];
+const steps = ["/estimation-tache0", "/EstimationSemelles", "/EstimationGrosBetonForm"];
 
 export default function SurveyNavigator() {
     const navigate = useNavigate();
@@ -23,25 +21,30 @@ export default function SurveyNavigator() {
     };
 
     return (
-        <div className="buttons-container">
-            <div className="previous-button-container">
+        <div className="flex justify-between bottom-0 left-0 right-0 p-4 bg-white shadow-md "
+        style={{
+            display: 'flex',
+            justifyContent: 'space-around',
+            cursor: 'pointer',
+        }}>
+            <div className="ml-4">
                 <button
                     onClick={handlePrevious}
                     disabled={currentIndex === 0}
+                    className="flex px-6 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-400 hover:bg-blue-600 transition-colors"
                 >
                     Previous
                 </button>
-                <div/>
-                <div className="next-button-container">
-                    <button
-                        onClick={handleNext}
-                        disabled={currentIndex === steps.length - 1}
-                    >
-                        Next
-                    </button>
-                </div>
+            </div>
+            <div className="mr-4">
+                <button
+                    onClick={handleNext}
+                    disabled={currentIndex === steps.length - 1}
+                    className="flex px-6 py-2 bg-blue-500 text-white rounded-lg disabled:bg-gray-400 hover:bg-blue-600 transition-colors"
+                >
+                    Next
+                </button>
             </div>
         </div>
     );
-
 }

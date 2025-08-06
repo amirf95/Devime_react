@@ -14,6 +14,14 @@ import Login from './components/authentification/LoginForm';
 import Register from './components/authentification/Register';
 import UserProfile from './components/authentification/userprofil';
 import Task0Form from "./components/estimation/Task0Form";
+import EntrepreneurPrixPage from "./components/estimation/EntrepreneurPrixPage";
+import EstimationGrosBetonForm from './components/estimation/EstimationGrosBetonForm';
+import EstimationSemelles from './components/estimation/EstimationSemelles'
+
+// import Unauthorized from './components/authentification/Unauthorized';
+
+
+
 import Chatbot from './components/Chatbot/ChatBot';
 function MainApp() {
   return (
@@ -43,6 +51,12 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/estimation-tache0" element={<Task0Form />} />
+        <Route path="/prix-page" element={<EntrepreneurPrixPage />} />
+        <Route path="/EstimationGrosBetonForm" element={<EstimationGrosBetonForm />} />
+        <Route path="/EstimationSemelles" element={<EstimationSemelles />} />
+
+        
+        {/* <Route path="/Unauthorized" element={<Unauthorized />} /> */}
 
       </Routes>
     </Router>

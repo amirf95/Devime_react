@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+*{
+  font-family: 'Times New Roman', Times, serif;
+}
+h1 {
+  font-size: 2.5em;
+  color: #000;
+  text-align: center;
+  margin-bottom: 20px;
+  text-decoration: underline;
+}
+label {
+  display: block;
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+body {
+  background: #ffffff;
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  color: #333333;
+}
+
+fieldset {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ffc800;
+}
+
+button {
+  
+  padding: 14px;
+  background: linear-gradient(to right, #ffc800, #cca000);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 4px #cca000;
+}
+input, select, textarea {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+}
+input:focus{
+   outline: none;
+  border-color: #ffc800;
+  box-shadow: 0 0 0 3px rgba(255, 200, 0, 0.15);
+}
+input:hover{
+  border-color: #ffc800;
+  box-shadow: 0 0 5px rgba(255, 200, 0, 0.2);
+  transform: scale(1.02);
+}
+
+
+.result-box {
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 15px;
+  border: 2px solid #ffc800;
+  border-radius: 8px;
+  border: #ffc800 ;
+}
+
+.gros-beton-wrapper h2 {
+  font-size: 2rem;
+  color: #333333;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+
+
+
+
+.formulaire-beton h4 {
+  font-size: 1.25rem;
+  color: #333333;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+
+select {
+  outline: none; /* remove blue border on focus */
+  border: 2px solid #ccc; /* default border */
+  border-radius: 6px;
+  padding: 8px;
+  background-color: white;
+  transition: border-color 0.3s ease;
+}
+
+select:hover,
+select:focus {
+  border-color: #ffc800; /* Your custom yellow */
+  box-shadow: 0 0 0 2px rgba(255, 200, 0, 0.3); /* Optional glow */
+}
+select option {
+  background-color: white;
+  color: black;
+  padding: 8px;
+}
+
+/* Hover and selected option (limited browser support) */
+select option:hover {
+  background-color: #ffc800; /* Yellow on hover (works in some browsers) */
+  color: white;
+}
+
+
+.resultat p {
+  margin: 0.5rem 0;
+  font-weight: 400;
+}
+
+.recapitulatif {
+  background: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin-top: 2rem;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.recapitulatif h3 {
+  font-size: 1.5rem;
+  color: #333333;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.recapitulatif table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.recapitulatif th,
+.recapitulatif td {
+  border: 1px solid #e0e0e0;
+  padding: 0.75rem;
+  text-align: center;
+  color: #333333;
+}
+
+.recapitulatif th {
+  background: #e0e0e0;
+  font-weight: 500;
+}
+
+.recapitulatif td {
+  background: #ffffff;
+}
+
+.recapitulatif tfoot td {
+  font-weight: 500;
+  background: #f0f0f0;
+}
+
+
+.forme-complexe {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+.result-box {
+  margin-top: 20px;
+  background-color: #fff;
+  padding: 15px;
+  border: 2px solid #ffc800;
+  border-radius: 8px;
+  border: #ffc800 ;
+}
+.alignment {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 120px; /* Make space for the navigation arrows */
+}
