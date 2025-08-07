@@ -425,6 +425,14 @@ export default function GrosBetonGroup() {
                       onChange={(e) => handleChange(index, 'prix_main_oeuvre', e.target.value)}
                     />
                   </label>
+                   <button
+                                        className="btn-supprimer"
+                                        style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                                        onClick={() => supprimerFormulaire(index)}
+                                        aria-label={`Supprimer formulaire ${index + 1}`}
+                                    >
+                                        ❌ Supprimer
+                    </button>
 
                   <button className="btn-calculer" onClick={() => calculer(index)}>
                     Calculer
