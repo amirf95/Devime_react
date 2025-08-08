@@ -81,11 +81,15 @@ function MateriauxEntrepreneur() {
         return materiaux.some(m => originalPrices.current[m.id] !== m.prix_personnalise);
     };
 
-    const handleChange = (index, value) => {
-        const updated = [...materiaux];
-        updated[index].prix_personnalise = value;
-        setMateriaux(updated);
-    };
+const handleChange = (id, value) => {
+    const updated = materiaux.map((m) => {
+        if (m.id === id) {
+            return { ...m, prix_personnalise: value };
+        }
+        return m;
+    });
+    setMateriaux(updated);
+};
 
     const handleSave = async (materiau) => {
         try {
@@ -202,7 +206,7 @@ function MateriauxEntrepreneur() {
                                             <input
                                                 type="number"
                                                 value={m.prix_personnalise !== null ? m.prix_personnalise : ''}
-                                                onChange={(e) => handleChange(index, e.target.value)}
+                                                onChange={(e) => handleChange(m.id, e.target.value)}
                                                 className="input-prix"
                                             />
                                         </td>
