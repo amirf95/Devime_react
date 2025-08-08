@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './EstimationGrosBetonForm.css';
+import Chatbot from '../Chatbot/ChatBot';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import Select from 'react-select';
+import NavBar from '../NavBar';
+import Footer from '../Footer';
+import NavigationArrows from '../NavigationArrows';
+const percentage = 30;
+
 
 // Utilitaire pour lire le cookie CSRF
 function getCookie(name) {
@@ -111,23 +120,43 @@ export default function GrosBetonGroup() {
     };
   };
 
-const addFormulaire = () => {
-  if (formulaires.length > 0) {
-    const premierFormulaire = formulaires[0];
-    const formCopie = { ...premierFormulaire.form };
-    const newForm = {
-      id: Date.now(),
-      type_beton: premierFormulaire.type_beton,
-      form: formCopie,
-      result: null,
-    };
-    setFormulaires([...formulaires, newForm]);
-  } else if (typesBeton.length > 0) {
-    // Pas de formulaire existant, on recrée un formulaire initial à partir du type beton
-    const nouveauFormulaire = createFormulaire(typesBeton[0], materiaux);
-    setFormulaires([nouveauFormulaire]);
-  }
-};
+  const addFormulaire = () => {
+    if (formulaires.length > 0) {
+      const premierFormulaire = formulaires[0];
+      const formCopie = { ...premierFormulaire.form };
+      const newForm = {
+        id: Date.now(),
+        type_beton: premierFormulaire.type_beton,
+        form: formCopie,
+        result: null,
+      };
+      setFormulaires([...formulaires, newForm]);
+    } else if (typesBeton.length > 0) {
+      // Pas de formulaire existant, on recrée un formulaire initial à partir du type beton
+      const nouveauFormulaire = createFormulaire(typesBeton[0], materiaux);
+      setFormulaires([nouveauFormulaire]);
+    }
+  };
+
+
+// Options pour les types de ciments
+    const ciments = getMateriauxParCategorie('ciment');
+    const TypeCiment = ciments.map(mat => ({
+        value: mat.id,
+        label: `${mat.nom} – ${mat.prix} TND/${mat.unite}`
+    }));
+  // Options pour les types de sable
+    const sables = getMateriauxParCategorie('sable');
+    const TypeSable = sables.map((mat) => ({
+        value: mat.id,
+        label: `${mat.nom} - ${mat.prix} TND/${mat.unite}`
+    }));
+    // Options pour les types de Gravier
+    const graviers = getMateriauxParCategorie('gravier');
+    const TypeGravier = graviers.map((mat) => ({
+        value: mat.id,
+        label: `${mat.nom} - ${mat.prix} TND/${mat.unite}`
+    }));
 
   const supprimerFormulaire = (index) => {
     const newFormulaires = [...formulaires];
@@ -175,240 +204,305 @@ const addFormulaire = () => {
   }
 
   return (
-    <div className="gros-beton-wrapper">
-      <h2>Estimation de Gros Béton</h2>
-      {(() => {
-        const elements = [];
-        for (let index = 0; index < formulaires.length; index++) {
-          const formulaire = formulaires[index];
-          elements.push(
-            <div key={formulaire.id} className="formulaire-beton">
-              <h4>Formulaire {index + 1}</h4>
+    <>
+      <NavBar variant="login" />
+      <Chatbot />
+      <div className="alignment">
+        <CircularProgressbar
+          value={percentage}
+          text={`${percentage}%`}
+          styles={buildStyles({
+            pathTransitionDuration: 0.5,
+            pathColor: '#ffc800',
+            textColor: '#ffc800',
+            backgroundColor: '#ffc800',
+            trail: {
+              stroke: '#d6d6d6',
+              strokeLinecap: 'butt',
+              transform: 'rotate(0.25turn)',
+              transformOrigin: 'center center',
+            },
+          })}
+        />
+        <div className="form-container">
+          <h1>Estimation de Traveaux</h1>
+          <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
+          <p>Tous les champs sont obligatoires.</p>
+          <h2>III) Gros Béton - Tâche 1.2</h2>
+          {(() => {
+            const elements = [];
+            for (let index = 0; index < formulaires.length; index++) {
+              const formulaire = formulaires[index];
+              elements.push(
+                <div key={formulaire.id} className="formulaire-beton">
+                  <h4>Gros Béton {index + 1}</h4>
 
-              {/* Bouton supprimer ajouté */}
-              <button
-                className="btn-supprimer"
-                style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
-                onClick={() => supprimerFormulaire(index)}
-                aria-label={`Supprimer formulaire ${index + 1}`}
-              >
-                ❌ Supprimer
-              </button>
 
-              <label>
-                Type de ciment :
-                <select
-                  value={formulaire.form.materiau_ciment_id}
-                  onChange={(e) => handleChange(index, 'materiau_ciment_id', e.target.value)}
-                >
-                  {(() => {
-                    const options = [];
-                    const ciments = getMateriauxParCategorie('ciment');
-                    for (let i = 0; i < ciments.length; i++) {
-                      const mat = ciments[i];
-                      options.push(
-                        <option key={mat.id} value={mat.id}>
-                          {mat.nom} - {mat.prix} TND/{mat.unite}
-                        </option>
-                      );
-                    }
-                    return options;
-                  })()}
-                </select>
-              </label>
 
-              {/* ... le reste des labels inchangé ... */}
+                                                      <label key={formulaire.id}>
+                                        Type de ciment :
+                                        <Select
+                                        styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
 
-              <label>
-                Nombre de sacs de ciment :
-                <input
-                  type="number"
-                  value={formulaire.form.nb_sacs_ciment}
-                  onChange={(e) => handleChange(index, 'nb_sacs_ciment', e.target.value)}
-                />
-              </label>
+                                                }),
 
-              <label>
-                Type de sable :
-                <select
-                  value={formulaire.form.materiau_sable_id}
-                  onChange={(e) => handleChange(index, 'materiau_sable_id', e.target.value)}
-                >
-                  {(() => {
-                    const options = [];
-                    const sables = getMateriauxParCategorie('sable');
-                    for (let i = 0; i < sables.length; i++) {
-                      const mat = sables[i];
-                      options.push(
-                        <option key={mat.id} value={mat.id}>
-                          {mat.nom} - {mat.prix} TND/{mat.unite}
-                        </option>
-                      );
-                    }
-                    return options;
-                  })()}
-                </select>
-              </label>
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                },
+                                            })}
 
-              <label>
-                Quantité sable (m³) :
-                <input
-                  type="number"
-                  value={formulaire.form.quantite_sable_m3}
-                  onChange={(e) => handleChange(index, 'quantite_sable_m3', e.target.value)}
-                />
-              </label>
+                                            options={TypeCiment}
+                                            // find the option object whose value (mat.id) matches the stored ID
+                                            value={TypeCiment.find(opt => opt.value === formulaire.form.materiau_ciment_id) || null}
+                                            onChange={selectedOption =>
+                                                handleChange(index, 'materiau_ciment_id', selectedOption.value)
+                                            }
+                                            placeholder="Sélectionnez un ciment…"
+                                            isClearable
+                                        />
+                                    </label>
 
-              <label>
-                Type de gravier :
-                <select
-                  value={formulaire.form.materiau_gravier_id}
-                  onChange={(e) => handleChange(index, 'materiau_gravier_id', e.target.value)}
-                >
-                  {(() => {
-                    const options = [];
-                    const graviers = getMateriauxParCategorie('gravier');
-                    for (let i = 0; i < graviers.length; i++) {
-                      const mat = graviers[i];
-                      options.push(
-                        <option key={mat.id} value={mat.id}>
-                          {mat.nom} - {mat.prix} TND/{mat.unite}
-                        </option>
-                      );
-                    }
-                    return options;
-                  })()}
-                </select>
-              </label>
+                  {/* ... le reste des labels inchangé ... */}
 
-              <label>
-                Quantité gravier (m³) :
-                <input
-                  type="number"
-                  value={formulaire.form.quantite_gravier_m3}
-                  onChange={(e) => handleChange(index, 'quantite_gravier_m3', e.target.value)}
-                />
-              </label>
+                  <label>
+                    Nombre de sacs de ciment :
+                    <input
+                      type="number"
+                      value={formulaire.form.nb_sacs_ciment}
+                      onChange={(e) => handleChange(index, 'nb_sacs_ciment', e.target.value)}
+                    />
+                  </label>
 
-              <label>
-                Quantité d'eau (litres) :
-                <input
-                  type="number"
-                  value={formulaire.form.quantite_eau_litres}
-                  onChange={(e) => handleChange(index, 'quantite_eau_litres', e.target.value)}
-                />
-              </label>
+                 <label>
+                                        Type de sable :
+                                        <Select
+                                        styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
 
-              <label>
-                Longueur (m) :
-                <input
-                  type="number"
-                  value={formulaire.form.longueur}
-                  onChange={(e) => handleChange(index, 'longueur', e.target.value)}
-                />
-              </label>
+                                                }),
 
-              <label>
-                Largeur (m) :
-                <input
-                  type="number"
-                  value={formulaire.form.largeur}
-                  onChange={(e) => handleChange(index, 'largeur', e.target.value)}
-                />
-              </label>
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                },
+                                            })}
+                                            isClearable
+                                            options={TypeSable}
+                                            value={TypeSable.find(option => option.value === formulaire.form.materiau_sable_id)}
+                                            onChange={(selectedOption) =>
+                                                handleChange(index, 'materiau_sable_id', selectedOption.value)
+                                            }
+                                        />
+                                    </label>
 
-              <label>
-                Hauteur (m) :
-                <input
-                  type="number"
-                  value={formulaire.form.hauteur}
-                  onChange={(e) => handleChange(index, 'hauteur', e.target.value)}
-                />
-              </label>
+                  <label>
+                    Quantité sable (m³) :
+                    <input
+                      type="number"
+                      value={formulaire.form.quantite_sable_m3}
+                      onChange={(e) => handleChange(index, 'quantite_sable_m3', e.target.value)}
+                    />
+                  </label>
 
-              <label>
-                Prix de transport (TND) :
-                <input
-                  type="number"
-                  value={formulaire.form.prix_transport}
-                  onChange={(e) => handleChange(index, 'prix_transport', e.target.value)}
-                />
-              </label>
+                  <label key={`${formulaire.id},${index}`}>
+                                        Type de gravier :
+                                        <Select
+                                        styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
 
-              <label>
-                Prix main d'œuvre (TND) :
-                <input
-                  type="number"
-                  value={formulaire.form.prix_main_oeuvre}
-                  onChange={(e) => handleChange(index, 'prix_main_oeuvre', e.target.value)}
-                />
-              </label>
+                                                }),
 
-              <button className="btn-calculer" onClick={() => calculer(index)}>
-                Calculer
-              </button>
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                },
+                                            })}
 
-              {formulaire.result && (
-                <div className="resultat">
-                  <p>
-                    <strong>Volume :</strong> {formulaire.result.volume.toFixed(2)} m³
-                  </p>
-                  <p>
-                    <strong>Prix par m³ :</strong> {formulaire.result.prix_m3} TND
-                  </p>
-                  <p>
-                    <strong>Prix total :</strong> {formulaire.result.prix_total} TND
-                  </p>
+                                            options={TypeGravier}
+                                            value={TypeGravier.find(opt => opt.value === formulaire.form.materiau_gravier_id)}
+                                            onChange={(selectedOption) =>
+                                                handleChange(index, 'materiau_gravier_id', selectedOption.value)
+                                            }
+                                            placeholder="Sélectionnez un gravier…"
+                                            isClearable
+                                        />
+                                    </label>
+
+                  <label>
+                    Quantité gravier (m³) :
+                    <input
+                      type="number"
+                      value={formulaire.form.quantite_gravier_m3}
+                      onChange={(e) => handleChange(index, 'quantite_gravier_m3', e.target.value)}
+                    />
+                  </label>
+
+                  <label>
+                    Quantité d'eau (litres) :
+                    <input
+                      type="number"
+                      value={formulaire.form.quantite_eau_litres}
+                      onChange={(e) => handleChange(index, 'quantite_eau_litres', e.target.value)}
+                    />
+                  </label>
+
+                  <label>
+                    Longueur (m) :
+                    <input
+                      type="number"
+                      value={formulaire.form.longueur}
+                      onChange={(e) => handleChange(index, 'longueur', e.target.value)}
+                    />
+                  </label>
+
+                  <label>
+                    Largeur (m) :
+                    <input
+                      type="number"
+                      value={formulaire.form.largeur}
+                      onChange={(e) => handleChange(index, 'largeur', e.target.value)}
+                    />
+                  </label>
+
+                  <label>
+                    Hauteur (m) :
+                    <input
+                      type="number"
+                      value={formulaire.form.hauteur}
+                      onChange={(e) => handleChange(index, 'hauteur', e.target.value)}
+                    />
+                  </label>
+
+                  <label>
+                    Prix de transport (TND) :
+                    <input
+                      type="number"
+                      value={formulaire.form.prix_transport}
+                      onChange={(e) => handleChange(index, 'prix_transport', e.target.value)}
+                    />
+                  </label>
+
+                  <label>
+                    Prix main d'œuvre (TND) :
+                    <input
+                      type="number"
+                      value={formulaire.form.prix_main_oeuvre}
+                      onChange={(e) => handleChange(index, 'prix_main_oeuvre', e.target.value)}
+                    />
+                  </label>
+                   <button
+                                        className="btn-supprimer"
+                                        style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                                        onClick={() => supprimerFormulaire(index)}
+                                        aria-label={`Supprimer formulaire ${index + 1}`}
+                                    >
+                                        ❌ Supprimer
+                    </button>
+
+                  <button className="btn-calculer" onClick={() => calculer(index)}>
+                    Calculer
+                  </button>
+
+                  {formulaire.result && (
+                    <div className="resultat">
+                      <p>
+                        <strong>Volume :</strong> {formulaire.result.volume.toFixed(2)} m³
+                      </p>
+                      <p>
+                        <strong>Prix par m³ :</strong> {formulaire.result.prix_m3} TND
+                      </p>
+                      <p>
+                        <strong>Prix total :</strong> {formulaire.result.prix_total} TND
+                      </p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          );
-        }
-        return elements;
-      })()}
+              );
+            }
+            return elements;
+          })()}
 
-      <button className="btn-ajouter" onClick={addFormulaire}>
-        ➕ Ajouter un gros béton
-      </button>
+          <button className="btn-ajouter" onClick={addFormulaire}>
+            ➕ Ajouter un gros béton
+          </button>
 
-      <div className="recapitulatif">
-        <h3>Récapitulatif général</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Volume (m³)</th>
-              <th>Prix/m³ (TND)</th>
-              <th>Prix total (TND)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(() => {
-              const rows = [];
-              for (let i = 0; i < formulaires.length; i++) {
-                const f = formulaires[i];
-                if (f.result) {
-                  rows.push(
-                    <tr key={f.id}>
-                      <td>{i + 1}</td>
-                      <td>{f.result.volume.toFixed(2)}</td>
-                      <td>{f.result.prix_m3}</td>
-                      <td>{f.result.prix_total}</td>
-                    </tr>
-                  );
-                }
-              }
-              return rows;
-            })()}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan="3">Prix total général</td>
-              <td>{prixTotalGeneral.toFixed(2)} TND</td>
-            </tr>
-          </tfoot>
-        </table>
+          <div className="recapitulatif">
+            <h3>Récapitulatif général</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Volume (m³)</th>
+                  <th>Prix/m³ (TND)</th>
+                  <th>Prix total (TND)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(() => {
+                  const rows = [];
+                  for (let i = 0; i < formulaires.length; i++) {
+                    const f = formulaires[i];
+                    if (f.result) {
+                      rows.push(
+                        <tr key={f.id}>
+                          <td>{i + 1}</td>
+                          <td>{f.result.volume.toFixed(2)}</td>
+                          <td>{f.result.prix_m3}</td>
+                          <td>{f.result.prix_total}</td>
+                        </tr>
+                      );
+                    }
+                  }
+                  return rows;
+                })()}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="3">Prix total général</td>
+                  <td>{prixTotalGeneral.toFixed(2)} TND</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <NavigationArrows />
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }

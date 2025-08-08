@@ -81,12 +81,15 @@ function MateriauxEntrepreneur() {
         return materiaux.some(m => originalPrices.current[m.id] !== m.prix_personnalise);
     };
 
-    const handleChange = (id, value) => {
-        const updated = materiaux.map((m) =>
-            m.id === id ? { ...m, prix_personnalise: value } : m
-        );
-        setMateriaux(updated);
-    };
+const handleChange = (id, value) => {
+    const updated = materiaux.map((m) => {
+        if (m.id === id) {
+            return { ...m, prix_personnalise: value };
+        }
+        return m;
+    });
+    setMateriaux(updated);
+};
 
 
     const handleSave = async (materiau) => {

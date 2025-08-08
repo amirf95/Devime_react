@@ -10,7 +10,7 @@
     color: #ccc;
     position: relative;
     display: inline-block;
-    padding: 0 0.5rem;
+    padding: 0.25rem  0.5rem;
 }
 .user-dropdown-container:hover{
     color: #fff;
@@ -19,7 +19,18 @@
     z-index: 1000;
     cursor: pointer;
 }
+.user-dropdown-container:hover{
+    transform: scale(1.01);
+}
 .login-navbar {
-    background-color: #2d3748 !important; /* Dark background for login variant */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    position: absolute;
+    background-color: #000 !important; /* Dark background for login variant */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 1rem;
 
 }

@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './EstimationSemelles.css';
+import NavBar from '../NavBar';
+import Chatbot from '../Chatbot/ChatBot';
+import Footer from '../Footer';
+import NavigationArrows from '../NavigationArrows';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+import Select from 'react-select'
 
+const percentage = 20;
 // Utilitaire pour lire le cookie CSRF
 function getCookie(name) {
     let cookieValue = null;
@@ -23,7 +31,7 @@ export default function SemelleGroup() {
     const [materiaux, setMateriaux] = useState([]);
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [typesSemelle, setTypesSemelle] = useState([]);
-    const [formesComplexes, setFormesComplexes] = useState([]);
+    // const [formesComplexes, setFormesComplexes] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
@@ -132,6 +140,36 @@ export default function SemelleGroup() {
         };
     };
 
+    // Options pour les types de semelles
+    const TypeSemelleOptions = [
+        { value: '', label: 'Choisir un type' },
+        { value: 'Semelle Isolée', label: 'Semelle Isolée' },
+        { value: 'Semelle Radiée', label: 'Semelle Radiée' },
+        { value: 'Semelle Filante', label: 'Semelle Filante' },
+        { value: 'Semelle de Répartition', label: 'Semelle de Répartition' },
+        { value: 'Semelle à Double Semelle', label: 'Semelle à Double Semelle' },
+        { value: 'Semelle Complexe', label: 'Semelle Complexe' }
+    ];
+
+    // Options pour les types de sable
+    const sables = getMateriauxParCategorie('sable');
+    const TypeSable = sables.map((mat) => ({
+        value: mat.id,
+        label: `${mat.nom} - ${mat.prix} TND/${mat.unite}`
+    }));
+    // Options pour les types de ciments
+    const ciments = getMateriauxParCategorie('ciment');
+    const TypeCiment = ciments.map(mat => ({
+        value: mat.id,
+        label: `${mat.nom} – ${mat.prix} TND/${mat.unite}`
+    }));
+    // Options pour les types de Gravier
+    const graviers = getMateriauxParCategorie('gravier');
+    const TypeGravier = graviers.map((mat) => ({
+        value: mat.id,
+        label: `${mat.nom} - ${mat.prix} TND/${mat.unite}`
+    }));
+
     const addFormulaire = () => {
         if (formulaires.length > 0) {
             const premierFormulaire = formulaires[0];
@@ -224,21 +262,22 @@ export default function SemelleGroup() {
     }
 
 
-    const ajouterFormeComplexe = () => {
-  const nouvelleForme = {
-    id: formesComplexes.length + 1, // Numérotation automatique
-    type: "rectangle",
-    dimensions: {
-      longueur: 0,
-      largeur: 0,
-      hauteur: 0,
-      rayon: 0,
-      base: 0
-    }
-  };
-
-  setFormesComplexes((prev) => [...prev, nouvelleForme]);
-};
+    /*const ajouterFormeComplexe = () => {
+      const nouvelleForme = {
+        id: formesComplexes.length + 1, // Numérotation automatique
+        type: "rectangle",
+        dimensions: {
+          longueur: 0,
+          largeur: 0,
+          hauteur: 0,
+          rayon: 0,
+          base: 0
+        }
+      };
+    
+      setFormesComplexes((prev) => [...prev, nouvelleForme]);
+    };
+    */
 
 
 
@@ -270,336 +309,464 @@ export default function SemelleGroup() {
         } else if (type_semelle === 'Semelle Complexe') {
             const formes = formulaire.form.formes_complexes;
 
-    champs.push(
-        <div key="formes-complexes">
-            <h5>Formes complexes :</h5>
-            {formes.map((forme, idx) => (
-                <div key={idx} className="forme-complexe">
-                    <label>
-                        Type :
-                        <select
-                            value={forme.type}
-                            onChange={(e) => {
-                                const newFormulaires = [...formulaires];
-                                newFormulaires[index].form.formes_complexes[idx].type = e.target.value;
-                                setFormulaires(newFormulaires);
-                            }}
-                        >
-                            <option value="rectangle">Rectangle</option>
-                            <option value="cercle">Cercle</option>
-                            <option value="triangle">Triangle</option>
-                        </select>
-                    </label>
-
-                    {/* Champs selon type */}
-                    {(() => {
-                        const d = forme.dimensions;
-                        const makeInput = (label, key) => (
+            champs.push(
+                <div key="formes-complexes">
+                    <h5>Formes complexes :</h5>
+                    {formes.map((forme, idx) => (
+                        <div key={idx} className="forme-complexe">
                             <label>
-                                {label} :
-                                <input
-                                    type="number"
-                                    value={d[key]}
+                                Type :
+                                <Select 
+                                styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
+
+                                                }),
+
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                },
+                                            })}
+
+                                options={TypeSemelleOptions}
+
+                                    value={forme.type}
                                     onChange={(e) => {
                                         const newFormulaires = [...formulaires];
-                                        newFormulaires[index].form.formes_complexes[idx].dimensions[key] = e.target.value;
+                                        newFormulaires[index].form.formes_complexes[idx].type = e.target.value;
                                         setFormulaires(newFormulaires);
                                     }}
-                                />
-                            </label>
-                        );
-                        switch (forme.type) {
-                            case 'rectangle':
-                                return <>
-                                    {makeInput("Longueur (m)", "longueur")}
-                                    {makeInput("Largeur (m)", "largeur")}
-                                    {makeInput("Hauteur (m)", "hauteur")}
-                                </>;
-                            case 'cercle':
-                                return <>
-                                    {makeInput("Rayon (m)", "rayon")}
-                                    {makeInput("Hauteur (m)", "hauteur")}
-                                </>;
-                            case 'triangle':
-                                return <>
-                                    {makeInput("Base (m)", "base")}
-                                    {makeInput("Hauteur (m)", "hauteur")}
-                                    {makeInput("Profondeur (m)", "profondeur")}
-                                </>;
-                            default:
-                                return null;
-                        }
-                    })()}
+                                >
 
+                                </Select>
+                            </label>
+
+                            {/* Champs selon type */}
+                            {(() => {
+                                const d = forme.dimensions;
+                                const makeInput = (label, key) => (
+                                    <label>
+                                        {label} :
+                                        <input
+                                            type="number"
+                                            value={d[key]}
+                                            onChange={(e) => {
+                                                const newFormulaires = [...formulaires];
+                                                newFormulaires[index].form.formes_complexes[idx].dimensions[key] = e.target.value;
+                                                setFormulaires(newFormulaires);
+                                            }}
+                                        />
+                                    </label>
+                                );
+                                switch (forme.type) {
+                                    case 'rectangle':
+                                        return <>
+                                            {makeInput("Longueur (m)", "longueur")}
+                                            {makeInput("Largeur (m)", "largeur")}
+                                            {makeInput("Hauteur (m)", "hauteur")}
+                                        </>;
+                                    case 'cercle':
+                                        return <>
+                                            {makeInput("Rayon (m)", "rayon")}
+                                            {makeInput("Hauteur (m)", "hauteur")}
+                                        </>;
+                                    case 'triangle':
+                                        return <>
+                                            {makeInput("Base (m)", "base")}
+                                            {makeInput("Hauteur (m)", "hauteur")}
+                                            {makeInput("Profondeur (m)", "profondeur")}
+                                        </>;
+                                    default:
+                                        return null;
+                                }
+                            })()}
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const newFormulaires = [...formulaires];
+                                    newFormulaires[index].form.formes_complexes.splice(idx, 1);
+                                    setFormulaires(newFormulaires);
+                                }}
+                                style={{ backgroundColor: '#ffaaaa', border: 'none', padding: '2px 6px', marginLeft: '10px', cursor: 'pointer' }}
+                            >
+                                ❌ Supprimer
+                            </button>
+                        </div>
+                    ))}
                     <button
                         type="button"
                         onClick={() => {
                             const newFormulaires = [...formulaires];
-                            newFormulaires[index].form.formes_complexes.splice(idx, 1);
+                            newFormulaires[index].form.formes_complexes.push({
+                                type: 'rectangle',
+                                dimensions: {
+                                    longueur: 0,
+                                    largeur: 0,
+                                    hauteur: 0,
+                                    rayon: 0,
+                                    base: 0,
+                                    profondeur: 0
+                                }
+                            });
                             setFormulaires(newFormulaires);
                         }}
-                        style={{ backgroundColor: '#ffaaaa', border: 'none', padding: '2px 6px', marginLeft: '10px', cursor: 'pointer' }}
+                        style={{ marginTop: '10px' }}
                     >
-                        ❌ Supprimer
+                        ➕ Ajouter une forme
                     </button>
                 </div>
-            ))}
-            <button
-                type="button"
-                onClick={() => {
-                    const newFormulaires = [...formulaires];
-                    newFormulaires[index].form.formes_complexes.push({
-                        type: 'rectangle',
-                        dimensions: {
-                            longueur: 0,
-                            largeur: 0,
-                            hauteur: 0,
-                            rayon: 0,
-                            base: 0,
-                            profondeur: 0
-                        }
-                    });
-                    setFormulaires(newFormulaires);
-                }}
-                style={{ marginTop: '10px' }}
-            >
-                ➕ Ajouter une forme
-            </button>
-        </div>
-    );
-}
+            );
+        }
 
         return champs;
     };
 
-
+    {/* here the true html starts all above is just functionalityy :) */ }
     return (
-        <div className="semelle-wrapper">
-            <h2>Estimation de Semelles</h2>
-            {(() => {
-                const elements = [];
-                for (let index = 0; index < formulaires.length; index++) {
-                    const formulaire = formulaires[index];
-                    elements.push(
-                        <div key={formulaire.id} className="formulaire-beton">
-                            <h4>Formulaire {index + 1}</h4>
+        <>
+            <NavBar variant="login" />
+            <Chatbot />
+            <div className='alignment'>
+                <CircularProgressbar 
+                value={percentage} 
+                text={`${percentage}%`} 
+                styles={buildStyles({
+                    pathTransitionDuration: 0.5,
+                    pathColor: '#ffc800',
+                    textColor: '#ffc800',
+                    backgroundColor: '#ffc800',
+                    trail: {
+                        stroke: '#d6d6d6',
+                        strokeLinecap: 'butt',
+                        transform: 'rotate(0.25turn)',
+                        transformOrigin: 'center center',
+                    },
+                })} />
+                <div className="form-container">
+                    <h1>Estimation de travaux</h1>
+                    <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
+                    <p>Tous les champs sont obligatoires.</p>
+                    <h2>II) Semelles - Tâche 1.1</h2>
+                    {/*
+                    <form >
+                        <fieldset>
+                    */ }
 
-                            {/* Bouton supprimer ajouté */}
-                            <button
-                                className="btn-supprimer"
-                                style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
-                                onClick={() => supprimerFormulaire(index)}
-                                aria-label={`Supprimer formulaire ${index + 1}`}
-                            >
-                                ❌ Supprimer
-                            </button>
+                    {(() => {
+                        const elements = [];
+                        for (let index = 0; index < formulaires.length; index++) {
+                            const formulaire = formulaires[index];
+                            elements.push(
+                                <div key={formulaire.id} >
+                                    <h4>Semelle {index + 1}</h4>
 
-                            <label>
-                                Type de ciment :
-                                <select
-                                    value={formulaire.form.materiau_ciment_id}
-                                    onChange={(e) => handleChange(index, 'materiau_ciment_id', e.target.value)}
-                                >
-                                    {(() => {
-                                        const options = [];
-                                        const ciments = getMateriauxParCategorie('ciment');
-                                        for (let i = 0; i < ciments.length; i++) {
-                                            const mat = ciments[i];
-                                            options.push(
-                                                <option key={mat.id} value={mat.id}>
-                                                    {mat.nom} - {mat.prix} TND/{mat.unite}
-                                                </option>
-                                            );
-                                        }
-                                        return options;
-                                    })()}
-                                </select>
-                            </label>
+                                    {/* Bouton supprimer ajouté 
+                                    <button
+                                        className="btn-supprimer"
+                                        style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                                        onClick={() => supprimerFormulaire(index)}
+                                        aria-label={`Supprimer formulaire ${index + 1}`}
+                                    >
+                                        ❌ Supprimer
+                                    </button>
+                                    */}
 
-                            {/* ... le reste des labels inchangé ... */}
+                                    <label key={formulaire.id}>
+                                        Type de ciment :
+                                        <Select
+                                        styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
 
-                            <label>
-                                Nombre de sacs de ciment :
-                                <input
-                                    type="number"
-                                    value={formulaire.form.nb_sacs_ciment}
-                                    onChange={(e) => handleChange(index, 'nb_sacs_ciment', e.target.value)}
-                                />
-                            </label>
+                                                }),
 
-                            <label>
-                                Type de sable :
-                                <select
-                                    value={formulaire.form.materiau_sable_id}
-                                    onChange={(e) => handleChange(index, 'materiau_sable_id', e.target.value)}
-                                >
-                                    {(() => {
-                                        const options = [];
-                                        const sables = getMateriauxParCategorie('sable');
-                                        for (let i = 0; i < sables.length; i++) {
-                                            const mat = sables[i];
-                                            options.push(
-                                                <option key={mat.id} value={mat.id}>
-                                                    {mat.nom} - {mat.prix} TND/{mat.unite}
-                                                </option>
-                                            );
-                                        }
-                                        return options;
-                                    })()}
-                                </select>
-                            </label>
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                },
+                                            })}
 
-                            <label>
-                                Quantité sable (m³) :
-                                <input
-                                    type="number"
-                                    value={formulaire.form.quantite_sable_m3}
-                                    onChange={(e) => handleChange(index, 'quantite_sable_m3', e.target.value)}
-                                />
-                            </label>
+                                            options={TypeCiment}
+                                            // find the option object whose value (mat.id) matches the stored ID
+                                            value={TypeCiment.find(opt => opt.value === formulaire.form.materiau_ciment_id) || null}
+                                            onChange={selectedOption =>
+                                                handleChange(index, 'materiau_ciment_id', selectedOption.value)
+                                            }
+                                            placeholder="Sélectionnez un ciment…"
+                                            isClearable
+                                        />
+                                    </label>
 
-                            <label>
-                                Type de gravier :
-                                <select
-                                    value={formulaire.form.materiau_gravier_id}
-                                    onChange={(e) => handleChange(index, 'materiau_gravier_id', e.target.value)}
-                                >
-                                    {(() => {
-                                        const options = [];
-                                        const graviers = getMateriauxParCategorie('gravier');
-                                        for (let i = 0; i < graviers.length; i++) {
-                                            const mat = graviers[i];
-                                            options.push(
-                                                <option key={mat.id} value={mat.id}>
-                                                    {mat.nom} - {mat.prix} TND/{mat.unite}
-                                                </option>
-                                            );
-                                        }
-                                        return options;
-                                    })()}
-                                </select>
-                            </label>
+                                    {/* ... le reste des labels inchangé ... */}
 
-                            <label>
-                                Quantité gravier (m³) :
-                                <input
-                                    type="number"
-                                    value={formulaire.form.quantite_gravier_m3}
-                                    onChange={(e) => handleChange(index, 'quantite_gravier_m3', e.target.value)}
-                                />
-                            </label>
+                                    <label>
+                                        Nombre de sacs de ciment (m³):
+                                        <input
+                                            type="number"
+                                            value={formulaire.form.nb_sacs_ciment}
+                                            onChange={(e) => handleChange(index, 'nb_sacs_ciment', e.target.value)}
+                                        />
+                                    </label>
 
-                            <label>
-                                Quantité d'eau (litres) :
-                                <input
-                                    type="number"
-                                    value={formulaire.form.quantite_eau_litres}
-                                    onChange={(e) => handleChange(index, 'quantite_eau_litres', e.target.value)}
-                                />
-                            </label>
+                                    <label>
+                                        Type de sable :
+                                        <Select
+                                        styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
 
-                            <label>
-                                Type de semelle :
-                                <select
-                                    value={formulaire.form.type_semelle}
-                                    onChange={(e) => handleChange(index, 'type_semelle', e.target.value)}
-                                >
-                                    <option value="">Choisir un type</option>
-                                    <option value="Semelle Isolée">Semelle Isolée</option>
-                                    <option value="Semelle Radiée">Semelle Radiée</option>
-                                    <option value="Semelle Filante">Semelle Filante</option>
-                                    <option value="Semelle de Répartition">Semelle de Répartition</option>
-                                    <option value="Semelle à Double Semelle">Semelle à Double Semelle</option>
-                                    <option value="Semelle Complexe">Semelle Complexe</option>
-                                </select>
-                            </label>
+                                                }),
 
-                            {/* Affichage dynamique des champs selon le type sélectionné */}
-                            {renderChampsSemelle(formulaire, index)}
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                },
+                                            })}
+                                            isClearable
+                                            options={TypeSable}
+                                            value={TypeSable.find(option => option.value === formulaire.form.materiau_sable_id)}
+                                            onChange={(selectedOption) =>
+                                                handleChange(index, 'materiau_sable_id', selectedOption.value)
+                                            }
+                                        />
+                                    </label>
 
-                            <label>
-                                Prix de transport (TND) :
-                                <input
-                                    type="number"
-                                    value={formulaire.form.prix_transport}
-                                    onChange={(e) => handleChange(index, 'prix_transport', e.target.value)}
-                                />
-                            </label>
+                                    <label>
+                                        Quantité sable (m³) :
+                                        <input
+                                            type="number"
+                                            value={formulaire.form.quantite_sable_m3}
+                                            onChange={(e) => handleChange(index, 'quantite_sable_m3', e.target.value)}
+                                        />
+                                    </label>
 
-                            <label>
-                                Prix main d'œuvre (TND) :
-                                <input
-                                    type="number"
-                                    value={formulaire.form.prix_main_oeuvre}
-                                    onChange={(e) => handleChange(index, 'prix_main_oeuvre', e.target.value)}
-                                />
-                            </label>
+                                    <label key={`${formulaire.id},${index}`}>
+                                        Type de gravier :
+                                        <Select
+                                        styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
 
-                            <button className="btn-calculer" onClick={() => calculer(index)}>
-                                Calculer
-                            </button>
+                                                }),
 
-                            {formulaire.result && (
-                                <div className="resultat">
-                                    <p>
-                                        <strong>Volume :</strong> {formulaire.result.volume.toFixed(2)} m³
-                                    </p>
-                                    <p>
-                                        <strong>Prix par m³ :</strong> {formulaire.result.prix_m3} TND
-                                    </p>
-                                    <p>
-                                        <strong>Prix total :</strong> {formulaire.result.prix_total} TND
-                                    </p>
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                },
+                                            })}
+
+                                            options={TypeGravier}
+                                            value={TypeGravier.find(opt => opt.value === formulaire.form.materiau_gravier_id)}
+                                            onChange={(selectedOption) =>
+                                                handleChange(index, 'materiau_gravier_id', selectedOption.value)
+                                            }
+                                            placeholder="Sélectionnez un gravier…"
+                                            isClearable
+                                        />
+                                    </label>
+
+
+                                    <label>
+                                        Quantité gravier (m³) :
+                                        <input
+                                            type="number"
+                                            value={formulaire.form.quantite_gravier_m3}
+                                            onChange={(e) => handleChange(index, 'quantite_gravier_m3', e.target.value)}
+                                        />
+                                    </label>
+
+                                    <label>
+                                        Quantité d'eau (litres) :
+                                        <input
+                                            type="number"
+                                            value={formulaire.form.quantite_eau_litres}
+                                            onChange={(e) => handleChange(index, 'quantite_eau_litres', e.target.value)}
+                                        />
+                                    </label>
+
+                                    <label>
+                                        Type de semelle :
+                                        <Select
+                                            styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
+
+                                                }),
+
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                },
+                                            })}
+
+                                            options={TypeSemelleOptions}
+                                            value={
+                                                TypeSemelleOptions.find(opt => opt.value === formulaire.form.type_semelle) || null
+                                            }
+                                            onChange={(selectedOption) =>
+                                                handleChange(index, 'type_semelle', selectedOption.value)
+                                            }
+                                            placeholder="Choisir un type"
+                                            isClearable
+                                        />
+                                    </label>
+                                    {/* Affichage dynamique des champs selon le type sélectionné */}
+                                    {renderChampsSemelle(formulaire, index)}
+
+                                    <label>
+                                        Prix de transport (TND) :
+                                        <input
+                                            type="number"
+                                            value={formulaire.form.prix_transport}
+                                            onChange={(e) => handleChange(index, 'prix_transport', e.target.value)}
+                                        />
+                                    </label>
+
+                                    <label>
+                                        Prix main d'œuvre (TND) :
+                                        <input
+                                            type="number"
+                                            value={formulaire.form.prix_main_oeuvre}
+                                            onChange={(e) => handleChange(index, 'prix_main_oeuvre', e.target.value)}
+                                        />
+                                    </label>
+
+                                    <button className="btn-calculer" onClick={() => calculer(index)}>
+                                        Calculer
+                                    </button>
+                                    <button
+                                        className="btn-supprimer"
+                                        style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                                        onClick={() => supprimerFormulaire(index)}
+                                        aria-label={`Supprimer formulaire ${index + 1}`}
+                                    >
+                                        ❌ Supprimer
+                                    </button>
+
+                                    {formulaire.result && (
+                                        <div className="result-box">
+                                            <p>
+                                                <strong>Volume :</strong> {formulaire.result.volume.toFixed(2)} m³
+                                            </p>
+                                            <p>
+                                                <strong>Prix par m³ :</strong> {formulaire.result.prix_m3} TND
+                                            </p>
+                                            <p>
+                                                <strong>Prix total :</strong> {formulaire.result.prix_total} TND
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
-                    );
-                }
-                return elements;
-            })()}
+                            );
+                        }
+                        return elements;
+                    })()}
 
-            <button className="btn-ajouter" onClick={addFormulaire}>
-                ➕ Ajouter une semelle
-            </button>
+                    {/*
+                        </fieldset>
+                    </form>
+*/ }
 
-            <div className="recapitulatif">
-                <h3>Récapitulatif général</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Volume (m³)</th>
-                            <th>Prix/m³ (TND)</th>
-                            <th>Prix total (TND)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(() => {
-                            const rows = [];
-                            for (let i = 0; i < formulaires.length; i++) {
-                                const f = formulaires[i];
-                                if (f.result) {
-                                    rows.push(
-                                        <tr key={f.id}>
-                                            <td>{i + 1}</td>
-                                            <td>{f.result.volume.toFixed(2)}</td>
-                                            <td>{f.result.prix_m3}</td>
-                                            <td>{f.result.prix_total}</td>
-                                        </tr>
-                                    );
-                                }
-                            }
-                            return rows;
-                        })()}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="3">Prix total général</td>
-                            <td>{prixTotalGeneral.toFixed(2)} TND</td>
-                        </tr>
-                    </tfoot>
-                </table>
+
+                    <button className="btn-ajouter" onClick={addFormulaire}>
+                        Ajouter une semelle
+                    </button>
+
+                    <div className="recapitulatif">
+                        <h3>Récapitulatif général</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Volume (m³)</th>
+                                    <th>Prix/m³ (TND)</th>
+                                    <th>Prix total (TND)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(() => {
+                                    const rows = [];
+                                    for (let i = 0; i < formulaires.length; i++) {
+                                        const f = formulaires[i];
+                                        if (f.result) {
+                                            rows.push(
+                                                <tr key={f.id}>
+                                                    <td>{i + 1}</td>
+                                                    <td>{f.result.volume.toFixed(2)}</td>
+                                                    <td>{f.result.prix_m3}</td>
+                                                    <td>{f.result.prix_total}</td>
+                                                </tr>
+                                            );
+                                        }
+                                    }
+                                    return rows;
+                                })()}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colSpan="3">Prix total général</td>
+                                    <td>{prixTotalGeneral.toFixed(2)} TND</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <NavigationArrows />
             </div>
-        </div>
+
+            <Footer />
+        </>
     );
 }

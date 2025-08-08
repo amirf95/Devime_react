@@ -8,11 +8,12 @@
 .dropdown-content {
   position: absolute;
   right: 0;
-  top: 100%; /* Appears below the trigger */
-  background: #2d3748; /* to change background color */
+  margin-top: 35px;
+  background: #000; /* to change background color */
   min-width: 160px;
   border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px #ffc800;
+  border-radius: 2px #ffc800;
   z-index: 1000;
   display: none;
   padding: 0.5rem 0;
@@ -43,7 +44,7 @@
 }
 
 .dropdown-content li:hover {
-  background: #4a5568; /* Hover effect */
+  background: #ffc800; /* Hover effect */
 }
 
 /* Mobile responsiveness */
