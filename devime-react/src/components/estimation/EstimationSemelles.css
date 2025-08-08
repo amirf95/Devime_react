@@ -194,3 +194,24 @@ select option:hover {
   min-height: 100vh;
   padding-bottom: 120px; /* Make space for the navigation arrows */
 }
+
+.custom-select {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  outline: none;
+  background-color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.custom-select:focus {
+  border-color: #ffc800;
+  box-shadow: 0 0 0 2px rgba(255, 200, 0, 0.3);
+}
+
+.custom-select:hover {
+  border-color: #ffc800;
+  box-shadow: 0 0 0 2px rgba(255, 200, 0, 0.3);
+}

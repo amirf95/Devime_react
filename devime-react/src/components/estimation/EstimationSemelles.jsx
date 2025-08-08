@@ -316,40 +316,20 @@ export default function SemelleGroup() {
                         <div key={idx} className="forme-complexe">
                             <label>
                                 Type :
-                                <Select 
-                                styles={{
-                                                control: (baseStyles, state) => ({
-                                                    ...baseStyles,
-                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
-                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
-                                                    '&:hover': {
-                                                        borderColor: '#ffc800',
-                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
-                                                    },
+<select
+  className="custom-select"
+  value={forme.type}
+  onChange={(e) => {
+    const newFormulaires = [...formulaires];
+    newFormulaires[index].form.formes_complexes[idx].type = e.target.value;
+    setFormulaires(newFormulaires);
+  }}
+>
+  <option value="rectangle">Rectangle</option>
+  <option value="cercle">Cercle</option>
+  <option value="triangle">Triangle</option>
+</select>
 
-                                                }),
-
-                                            }}
-                                            theme={(theme) => ({
-                                                ...theme,
-                                                colors: {
-                                                    ...theme.colors,
-                                                    primary: '#ffc800',
-                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
-                                                },
-                                            })}
-
-                                options={TypeSemelleOptions}
-
-                                    value={forme.type}
-                                    onChange={(e) => {
-                                        const newFormulaires = [...formulaires];
-                                        newFormulaires[index].form.formes_complexes[idx].type = e.target.value;
-                                        setFormulaires(newFormulaires);
-                                    }}
-                                >
-
-                                </Select>
                             </label>
 
                             {/* Champs selon type */}
