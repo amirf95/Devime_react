@@ -253,7 +253,7 @@ export default function Task0Form() {
                                     </div>
                                 );
                             })}
-                            <button type="button" onClick={addFouille}>+ Ajouter une fouille</button>
+                            <button className='Mybutton' type="button" onClick={addFouille}>+ Ajouter une fouille</button>
                         </fieldset>
                         <fieldset>
                             <legend>3) Terrassement</legend>
@@ -278,7 +278,7 @@ export default function Task0Form() {
                                 onChange={e => setTerrassement({ ...terrassement, description: e.target.value })}
                             />
                         </fieldset>
-                        <button type="submit">💰 Calculer</button>
+                        <button type="submit" className='Mybutton'>💰 Calculer</button>
                     </form>
                     {error && <div className="error-message" style={{ color: 'red', marginTop: 10 }}>{error}</div>}
                     {result && (

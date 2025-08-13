@@ -77,6 +77,62 @@ h1 {
   margin-bottom: 20px;
   text-decoration: underline;
 }
+
+
+fieldset {
+  background-color:#f9f9f9 ;
+   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  border: 0.5px solid #ffc800;
+}
+
+label {
+  display: block;
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 6px;
+  margin-top: 4px;
+}
+input:focus{
+   outline: none;
+  border-color: #ffc800;
+
+}
+input:hover{
+  border-color: #ffc800;
+  transform: scale(1.02);
+}
+
+.Mybutton {
+  width: 120px;          
+  height: 60px; 
+  padding: 14px;
+  background: linear-gradient(to right, #ffc800, #D5B60A);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+.Mybutton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 4px #cca000;
+}
+
+
 .form-container {
   border: 2px solid #ffc800;
   margin-top: 50px;
@@ -90,17 +146,10 @@ h1 {
   box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
 
-fieldset {
-  margin-bottom: 20px;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #ffc800;
-}
-
 .fouille-group {
   padding: 10px;
   margin-bottom: 10px;
-  background-color: #fff;
+  background-color: #f9f9f9;
   
 }
 .fouille-group h4{
@@ -122,48 +171,6 @@ fieldset {
   accent-color: var(--primary); /* if supported by browser */
 }
 
-label {
-  display: block;
-  margin-top: 8px;
-  font-weight: bold;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 6px;
-  margin-top: 4px;
-}
-input:focus{
-   outline: none;
-  border-color: #ffc800;
-  box-shadow: 0 0 0 3px rgba(255, 200, 0, 0.15);
-}
-input:hover{
-  border-color: #ffc800;
-  box-shadow: 0 0 5px rgba(255, 200, 0, 0.2);
-  transform: scale(1.02);
-}
-
-button {
-  
-  padding: 14px;
-  background: linear-gradient(to right, #ffc800, #cca000);
-  color: #fff;
-  font-weight: 600;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 4px #cca000;
-}
 
 .result-box {
   margin-top: 20px;
@@ -174,14 +181,7 @@ button:hover {
   border: #ffc800 ;
 }
 
-.error-box {
-  margin-top: 20px;
-  color: red;
-  background: #ffe6e6;
-  padding: 10px;
-  border: 1px solid red;
-  border-radius: 8px;
-}
+
 .CircularProgressbar {
   width: 100px;
   height: 100px;
@@ -192,4 +192,20 @@ button:hover {
   z-index: 1000;
   color: #ffc800;
   font-size: 20px;
+}
+fieldset input {
+  border: #000 solid 0.5px;
+  border-radius: 8px;
+
+}
+fieldset input:focus,
+fieldset select:focus {
+  outline: none;
+  border-color: #ffc800;
+  box-shadow: 0 0 5px rgba(255, 200, 0, 0.5);
+}
+fieldset input:hover{
+  border-color: #ffc800;
+  box-shadow: 0 0 5px rgba(255, 200, 0, 0.5);
+  transform: scale(1.02);
 }

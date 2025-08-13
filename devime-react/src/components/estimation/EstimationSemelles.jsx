@@ -8,7 +8,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import Select from 'react-select'
 
-const percentage = 20;
+const percentage = 30;
 // Utilitaire pour lire le cookie CSRF
 function getCookie(name) {
     let cookieValue = null;
@@ -187,6 +187,11 @@ export default function SemelleGroup() {
             setFormulaires([nouveauFormulaire]);
         }
     };
+    const ShapeOptions = [
+    { value: 'rectangle', label: 'Rectangle' },
+    { value: 'cercle', label: 'Cercle' },
+    { value: 'triangle', label: 'Triangle' }
+];
 
     const supprimerFormulaire = (index) => {
         const newFormulaires = [...formulaires];
@@ -261,8 +266,8 @@ export default function SemelleGroup() {
         return <p style={{ color: 'red' }}>⚠️ Vous devez vous connecter pour accéder à cette page.</p>;
     }
 
-
-    /*const ajouterFormeComplexe = () => {
+/*
+    const ajouterFormeComplexe = () => {
       const nouvelleForme = {
         id: formesComplexes.length + 1, // Numérotation automatique
         type: "rectangle",
@@ -277,7 +282,7 @@ export default function SemelleGroup() {
     
       setFormesComplexes((prev) => [...prev, nouvelleForme]);
     };
-    */
+  */
 
 
 
@@ -335,16 +340,16 @@ export default function SemelleGroup() {
                                                 colors: {
                                                     ...theme.colors,
                                                     primary: '#ffc800',
-                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                                                     // Optional: hovered option bg
                                                 },
                                             })}
 
-                                options={TypeSemelleOptions}
+                                options={ShapeOptions}
 
-                                    value={forme.type}
-                                    onChange={(e) => {
+                                    value={ShapeOptions.find(opt => opt.value === forme.type) || null}
+                                    onChange={(selected) => {
                                         const newFormulaires = [...formulaires];
-                                        newFormulaires[index].form.formes_complexes[idx].type = e.target.value;
+                                        newFormulaires[index].form.formes_complexes[idx].type = selected.value;
                                         setFormulaires(newFormulaires);
                                     }}
                                 >
@@ -399,9 +404,8 @@ export default function SemelleGroup() {
                                     newFormulaires[index].form.formes_complexes.splice(idx, 1);
                                     setFormulaires(newFormulaires);
                                 }}
-                                style={{ backgroundColor: '#ffaaaa', border: 'none', padding: '2px 6px', marginLeft: '10px', cursor: 'pointer' }}
-                            >
-                                ❌ Supprimer
+                                className="Mybutton">
+                                 Supprimer
                             </button>
                         </div>
                     ))}
@@ -424,7 +428,7 @@ export default function SemelleGroup() {
                         }}
                         style={{ marginTop: '10px' }}
                     >
-                        ➕ Ajouter une forme
+                        + Ajouter une forme
                     </button>
                 </div>
             );
@@ -455,10 +459,11 @@ export default function SemelleGroup() {
                     },
                 })} />
                 <div className="form-container">
+
                     <h1>Estimation de travaux</h1>
                     <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
                     <p>Tous les champs sont obligatoires.</p>
-                    <h2>II) Semelles - Tâche 1.1</h2>
+                    <h2>III) Semelles - Tâche 1.2</h2>
                     {/*
                     <form >
                         <fieldset>
@@ -469,7 +474,7 @@ export default function SemelleGroup() {
                         for (let index = 0; index < formulaires.length; index++) {
                             const formulaire = formulaires[index];
                             elements.push(
-                                <div key={formulaire.id} >
+                                <div key={formulaire.id} className='formulaire-semelle' >
                                     <h4>Semelle {index + 1}</h4>
 
                                     {/* Bouton supprimer ajouté 
@@ -682,19 +687,19 @@ export default function SemelleGroup() {
                                             onChange={(e) => handleChange(index, 'prix_main_oeuvre', e.target.value)}
                                         />
                                     </label>
-
-                                    <button className="btn-calculer" onClick={() => calculer(index)}>
-                                        Calculer
+                                                <div className="btn-container">
+                                    <button className="Mybutton" onClick={() => calculer(index)}>
+                                        💰 Calculer
                                     </button>
                                     <button
-                                        className="btn-supprimer"
-                                        style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                                        className="Mybutton"
                                         onClick={() => supprimerFormulaire(index)}
                                         aria-label={`Supprimer formulaire ${index + 1}`}
                                     >
-                                        ❌ Supprimer
+                                         Supprimer
                                     </button>
 
+                                    </div>
                                     {formulaire.result && (
                                         <div className="result-box">
                                             <p>
@@ -720,7 +725,7 @@ export default function SemelleGroup() {
 */ }
 
 
-                    <button className="btn-ajouter" onClick={addFormulaire}>
+                    <button className="Mybutton" onClick={addFormulaire}>
                         Ajouter une semelle
                     </button>
 
