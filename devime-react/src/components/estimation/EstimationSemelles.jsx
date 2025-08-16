@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './EstimationSemelles.css';
+import Swal from 'sweetalert2';
 import NavBar from '../NavBar';
 import Chatbot from '../Chatbot/ChatBot';
 import Footer from '../Footer';
@@ -7,6 +8,7 @@ import NavigationArrows from '../NavigationArrows';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import Select from 'react-select'
+import { useNavigate } from 'react-router-dom';
 
 const percentage = 30;
 // Utilitaire pour lire le cookie CSRF
@@ -31,70 +33,86 @@ export default function SemelleGroup() {
     const [materiaux, setMateriaux] = useState([]);
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [typesSemelle, setTypesSemelle] = useState([]);
+    
     // const [formesComplexes, setFormesComplexes] = useState([]);
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                const resTypes = await fetch('http://localhost:8000/api/fondation/types-beton/', {
-                    credentials: 'include',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
-                });
-                const data = await resTypes.json();
-                const typesSemelle = data.find(type => type.nom.toLowerCase().includes('semelle'));
+  const showToast = (icon, title) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({ icon, title });
+  };
 
-                const resMateriaux = await fetch('http://localhost:8000/api/materiaux/materiaux-avec-prix/', {
-                    credentials: 'include',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
-                });
+  async function fetchData() {
+    try {
+      const resTypes = await fetch('http://localhost:8000/api/fondation/types-beton/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      });
+      const data = await resTypes.json();
+      const typesSemelle = data.find(type => type.nom.toLowerCase().includes('semelle'));
 
-                if (resMateriaux.status === 403 || resMateriaux.status === 401) {
-                    alert("Vous devez vous connecter pour accéder aux matériaux.");
-                    setIsAuthenticated(false);
-                    return;
-                }
+      const resMateriaux = await fetch('http://localhost:8000/api/materiaux/materiaux-avec-prix/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      });
 
-                const matData = await resMateriaux.json();
-                setMateriaux(matData);
+      if (resMateriaux.status === 403 || resMateriaux.status === 401) {
+        showToast("warning", "⚠️ Vous devez vous connecter pour accéder aux matériaux.");
+        setIsAuthenticated(false);
+        return;
+      }
 
-                // Fetch prix main d'oeuvre dynamique
-                const resMO = await fetch('http://localhost:8000/api/materiaux/main-oeuvre-prix/', {
-                    credentials: 'include',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
-                });
+      const matData = await resMateriaux.json();
+      setMateriaux(matData);
 
-                let prixMO = 11; // valeur par défaut
-                if (resMO.ok) {
-                    const moData = await resMO.json();
-                    if (moData.prix !== undefined) {
-                        prixMO = parseFloat(moData.prix);
-                    }
-                }
+      // Fetch prix main d'oeuvre dynamique
+      const resMO = await fetch('http://localhost:8000/api/materiaux/main-oeuvre-prix/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      });
 
-                if (typesSemelle) {
-                    const formulaireInitial = createFormulaire(typesSemelle, matData);
-                    formulaireInitial.form.prix_main_oeuvre = prixMO; // injection prix main oeuvre dynamique
-                    setTypesBeton([typesSemelle]);
-                    setFormulaires([formulaireInitial]);
-
-                }
-
-                const resTypesSemelle = await fetch('http://localhost:8000/api/fondation/types-semelle/', {
-                    credentials: 'include',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
-                });
-                const dataSemelle = await resTypesSemelle.json();
-                setTypesSemelle(dataSemelle);
-
-
-            } catch (error) {
-                console.error('Erreur fetch générale :', error);
-                alert("Une erreur est survenue lors du chargement des données.");
-                setIsAuthenticated(false);
-            }
+      let prixMO = 11; // valeur par défaut
+      if (resMO.ok) {
+        const moData = await resMO.json();
+        if (moData.prix !== undefined) {
+          prixMO = parseFloat(moData.prix);
         }
-        fetchData();
-    }, []);
+      }
+
+      if (typesSemelle) {
+        const formulaireInitial = createFormulaire(typesSemelle, matData);
+        formulaireInitial.form.prix_main_oeuvre = prixMO; 
+        setTypesBeton([typesSemelle]);
+        setFormulaires([formulaireInitial]);
+      }
+
+      const resTypesSemelle = await fetch('http://localhost:8000/api/fondation/types-semelle/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      });
+      const dataSemelle = await resTypesSemelle.json();
+      setTypesSemelle(dataSemelle);
+
+    } catch (error) {
+      console.error('Erreur fetch générale :', error);
+      showToast("error", "❌ Une erreur est survenue lors du chargement des données.");
+      setIsAuthenticated(false);
+    }
+  }
+
+  fetchData();
+}, []);
+
 
     const getMateriauxParCategorie = (nomCategorie) => {
         return materiaux.filter((mat) => mat.categorie.toLowerCase() === nomCategorie.toLowerCase());
@@ -256,15 +274,26 @@ export default function SemelleGroup() {
         };
         setFormulaires(newFormulaires);
     };
+const navigate = useNavigate();
 
     const prixTotalGeneral = formulaires.reduce(
         (acc, f) => acc + (f.result ? parseFloat(f.result.prix_total) : 0),
         0
     );
 
-    if (!isAuthenticated) {
-        return <p style={{ color: 'red' }}>⚠️ Vous devez vous connecter pour accéder à cette page.</p>;
-    }
+   if (!isAuthenticated) {
+  Swal.fire({
+    icon: "warning",
+    title: "⚠️ Vous devez vous connecter",
+    text: "Veuillez vous connecter pour accéder à cette page.",
+    confirmButtonText: "OK"
+  }).then(() => {
+        navigate("/login");//redirect to login page
+  });
+
+
+  return null; // or redirect to login
+}
 
 /*
     const ajouterFormeComplexe = () => {

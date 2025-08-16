@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import './EstimationGrosBetonForm.css';
 import Chatbot from '../Chatbot/ChatBot';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -7,6 +8,7 @@ import Select from 'react-select';
 import NavBar from '../NavBar';
 import Footer from '../Footer';
 import NavigationArrows from '../NavigationArrows';
+import { useNavigate } from 'react-router-dom';
 const percentage = 20;
 
 
@@ -25,12 +27,29 @@ function getCookie(name) {
   }
   return cookieValue;
 }
-
 export default function GrosBetonGroup() {
+  const navigate = useNavigate();
   const [typesBeton, setTypesBeton] = useState([]);
   const [formulaires, setFormulaires] = useState([]);
   const [materiaux, setMateriaux] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+
+  // Définir showToast en dehors du useEffect pour qu'il soit accessible partout
+  const showToast = (icon, title) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({ icon, title });
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -48,7 +67,7 @@ export default function GrosBetonGroup() {
         });
 
         if (resMateriaux.status === 403 || resMateriaux.status === 401) {
-          alert("Vous devez vous connecter pour accéder aux matériaux.");
+          showToast('error', "⚠️ Vous devez vous connecter pour accéder à cette page.");
           setIsAuthenticated(false);
           return;
         }
@@ -79,7 +98,7 @@ export default function GrosBetonGroup() {
 
       } catch (error) {
         console.error('Erreur fetch générale :', error);
-        alert("Une erreur est survenue lors du chargement des données.");
+        showToast('error', "Une erreur est survenue lors du chargement des données.");
         setIsAuthenticated(false);
       }
     }
@@ -200,8 +219,18 @@ export default function GrosBetonGroup() {
   );
 
   if (!isAuthenticated) {
-    return <p style={{ color: 'red' }}>⚠️ Vous devez vous connecter pour accéder à cette page.</p>;
-  }
+  Swal.fire({
+    icon: "warning",
+    title: "⚠️ Vous devez vous connecter",
+    text: "Veuillez vous connecter pour accéder à cette page.",
+    confirmButtonText: "OK"
+  }).then(() => {
+        navigate("/login");//redirect to login page
+  });
+
+  return null; // DON T RENDER THE PAGE IF NOT AUTHENTICATED
+}
+  
 
   return (
     <>
