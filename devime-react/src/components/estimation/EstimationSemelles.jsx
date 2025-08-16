@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './EstimationSemelles.css';
+import Swal from 'sweetalert2';
 import NavBar from '../NavBar';
 import Chatbot from '../Chatbot/ChatBot';
 import Footer from '../Footer';
@@ -7,8 +8,9 @@ import NavigationArrows from '../NavigationArrows';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import Select from 'react-select'
+import { useNavigate } from 'react-router-dom';
 
-const percentage = 20;
+const percentage = 30;
 // Utilitaire pour lire le cookie CSRF
 function getCookie(name) {
     let cookieValue = null;
@@ -31,70 +33,86 @@ export default function SemelleGroup() {
     const [materiaux, setMateriaux] = useState([]);
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [typesSemelle, setTypesSemelle] = useState([]);
+    
     // const [formesComplexes, setFormesComplexes] = useState([]);
 
     useEffect(() => {
-        async function fetchData() {
-            try {
-                const resTypes = await fetch('http://localhost:8000/api/fondation/types-beton/', {
-                    credentials: 'include',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
-                });
-                const data = await resTypes.json();
-                const typesSemelle = data.find(type => type.nom.toLowerCase().includes('semelle'));
+  const showToast = (icon, title) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({ icon, title });
+  };
 
-                const resMateriaux = await fetch('http://localhost:8000/api/materiaux/materiaux-avec-prix/', {
-                    credentials: 'include',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
-                });
+  async function fetchData() {
+    try {
+      const resTypes = await fetch('http://localhost:8000/api/fondation/types-beton/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      });
+      const data = await resTypes.json();
+      const typesSemelle = data.find(type => type.nom.toLowerCase().includes('semelle'));
 
-                if (resMateriaux.status === 403 || resMateriaux.status === 401) {
-                    alert("Vous devez vous connecter pour accéder aux matériaux.");
-                    setIsAuthenticated(false);
-                    return;
-                }
+      const resMateriaux = await fetch('http://localhost:8000/api/materiaux/materiaux-avec-prix/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      });
 
-                const matData = await resMateriaux.json();
-                setMateriaux(matData);
+      if (resMateriaux.status === 403 || resMateriaux.status === 401) {
+        showToast("warning", "⚠️ Vous devez vous connecter pour accéder aux matériaux.");
+        setIsAuthenticated(false);
+        return;
+      }
 
-                // Fetch prix main d'oeuvre dynamique
-                const resMO = await fetch('http://localhost:8000/api/materiaux/main-oeuvre-prix/', {
-                    credentials: 'include',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
-                });
+      const matData = await resMateriaux.json();
+      setMateriaux(matData);
 
-                let prixMO = 11; // valeur par défaut
-                if (resMO.ok) {
-                    const moData = await resMO.json();
-                    if (moData.prix !== undefined) {
-                        prixMO = parseFloat(moData.prix);
-                    }
-                }
+      // Fetch prix main d'oeuvre dynamique
+      const resMO = await fetch('http://localhost:8000/api/materiaux/main-oeuvre-prix/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      });
 
-                if (typesSemelle) {
-                    const formulaireInitial = createFormulaire(typesSemelle, matData);
-                    formulaireInitial.form.prix_main_oeuvre = prixMO; // injection prix main oeuvre dynamique
-                    setTypesBeton([typesSemelle]);
-                    setFormulaires([formulaireInitial]);
-
-                }
-
-                const resTypesSemelle = await fetch('http://localhost:8000/api/fondation/types-semelle/', {
-                    credentials: 'include',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken') },
-                });
-                const dataSemelle = await resTypesSemelle.json();
-                setTypesSemelle(dataSemelle);
-
-
-            } catch (error) {
-                console.error('Erreur fetch générale :', error);
-                alert("Une erreur est survenue lors du chargement des données.");
-                setIsAuthenticated(false);
-            }
+      let prixMO = 11; // valeur par défaut
+      if (resMO.ok) {
+        const moData = await resMO.json();
+        if (moData.prix !== undefined) {
+          prixMO = parseFloat(moData.prix);
         }
-        fetchData();
-    }, []);
+      }
+
+      if (typesSemelle) {
+        const formulaireInitial = createFormulaire(typesSemelle, matData);
+        formulaireInitial.form.prix_main_oeuvre = prixMO; 
+        setTypesBeton([typesSemelle]);
+        setFormulaires([formulaireInitial]);
+      }
+
+      const resTypesSemelle = await fetch('http://localhost:8000/api/fondation/types-semelle/', {
+        credentials: 'include',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+      });
+      const dataSemelle = await resTypesSemelle.json();
+      setTypesSemelle(dataSemelle);
+
+    } catch (error) {
+      console.error('Erreur fetch générale :', error);
+      showToast("error", "❌ Une erreur est survenue lors du chargement des données.");
+      setIsAuthenticated(false);
+    }
+  }
+
+  fetchData();
+}, []);
+
 
     const getMateriauxParCategorie = (nomCategorie) => {
         return materiaux.filter((mat) => mat.categorie.toLowerCase() === nomCategorie.toLowerCase());
@@ -187,6 +205,11 @@ export default function SemelleGroup() {
             setFormulaires([nouveauFormulaire]);
         }
     };
+    const ShapeOptions = [
+    { value: 'rectangle', label: 'Rectangle' },
+    { value: 'cercle', label: 'Cercle' },
+    { value: 'triangle', label: 'Triangle' }
+];
 
     const supprimerFormulaire = (index) => {
         const newFormulaires = [...formulaires];
@@ -251,18 +274,29 @@ export default function SemelleGroup() {
         };
         setFormulaires(newFormulaires);
     };
+const navigate = useNavigate();
 
     const prixTotalGeneral = formulaires.reduce(
         (acc, f) => acc + (f.result ? parseFloat(f.result.prix_total) : 0),
         0
     );
 
-    if (!isAuthenticated) {
-        return <p style={{ color: 'red' }}>⚠️ Vous devez vous connecter pour accéder à cette page.</p>;
-    }
+   if (!isAuthenticated) {
+  Swal.fire({
+    icon: "warning",
+    title: "⚠️ Vous devez vous connecter",
+    text: "Veuillez vous connecter pour accéder à cette page.",
+    confirmButtonText: "OK"
+  }).then(() => {
+        navigate("/login");//redirect to login page
+  });
 
 
-    /*const ajouterFormeComplexe = () => {
+  return null; // or redirect to login
+}
+
+/*
+    const ajouterFormeComplexe = () => {
       const nouvelleForme = {
         id: formesComplexes.length + 1, // Numérotation automatique
         type: "rectangle",
@@ -277,7 +311,7 @@ export default function SemelleGroup() {
     
       setFormesComplexes((prev) => [...prev, nouvelleForme]);
     };
-    */
+  */
 
 
 
@@ -316,20 +350,40 @@ export default function SemelleGroup() {
                         <div key={idx} className="forme-complexe">
                             <label>
                                 Type :
-<select
-  className="custom-select"
-  value={forme.type}
-  onChange={(e) => {
-    const newFormulaires = [...formulaires];
-    newFormulaires[index].form.formes_complexes[idx].type = e.target.value;
-    setFormulaires(newFormulaires);
-  }}
->
-  <option value="rectangle">Rectangle</option>
-  <option value="cercle">Cercle</option>
-  <option value="triangle">Triangle</option>
-</select>
+                                <Select 
+                                styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
 
+                                                }),
+
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                     // Optional: hovered option bg
+                                                },
+                                            })}
+
+                                options={ShapeOptions}
+
+                                    value={ShapeOptions.find(opt => opt.value === forme.type) || null}
+                                    onChange={(selected) => {
+                                        const newFormulaires = [...formulaires];
+                                        newFormulaires[index].form.formes_complexes[idx].type = selected.value;
+                                        setFormulaires(newFormulaires);
+                                    }}
+                                >
+
+                                </Select>
                             </label>
 
                             {/* Champs selon type */}
@@ -379,9 +433,8 @@ export default function SemelleGroup() {
                                     newFormulaires[index].form.formes_complexes.splice(idx, 1);
                                     setFormulaires(newFormulaires);
                                 }}
-                                style={{ backgroundColor: '#ffaaaa', border: 'none', padding: '2px 6px', marginLeft: '10px', cursor: 'pointer' }}
-                            >
-                                ❌ Supprimer
+                                className="Mybutton">
+                                 Supprimer
                             </button>
                         </div>
                     ))}
@@ -404,7 +457,7 @@ export default function SemelleGroup() {
                         }}
                         style={{ marginTop: '10px' }}
                     >
-                        ➕ Ajouter une forme
+                        + Ajouter une forme
                     </button>
                 </div>
             );
@@ -435,10 +488,11 @@ export default function SemelleGroup() {
                     },
                 })} />
                 <div className="form-container">
+
                     <h1>Estimation de travaux</h1>
                     <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
                     <p>Tous les champs sont obligatoires.</p>
-                    <h2>II) Semelles - Tâche 1.1</h2>
+                    <h2>III) Semelles - Tâche 1.2</h2>
                     {/*
                     <form >
                         <fieldset>
@@ -449,7 +503,7 @@ export default function SemelleGroup() {
                         for (let index = 0; index < formulaires.length; index++) {
                             const formulaire = formulaires[index];
                             elements.push(
-                                <div key={formulaire.id} >
+                                <div key={formulaire.id} className='formulaire-semelle' >
                                     <h4>Semelle {index + 1}</h4>
 
                                     {/* Bouton supprimer ajouté 
@@ -662,19 +716,19 @@ export default function SemelleGroup() {
                                             onChange={(e) => handleChange(index, 'prix_main_oeuvre', e.target.value)}
                                         />
                                     </label>
-
-                                    <button className="btn-calculer" onClick={() => calculer(index)}>
-                                        Calculer
+                                                <div className="btn-container">
+                                    <button className="Mybutton" onClick={() => calculer(index)}>
+                                        💰 Calculer
                                     </button>
                                     <button
-                                        className="btn-supprimer"
-                                        style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
+                                        className="Mybutton"
                                         onClick={() => supprimerFormulaire(index)}
                                         aria-label={`Supprimer formulaire ${index + 1}`}
                                     >
-                                        ❌ Supprimer
+                                         Supprimer
                                     </button>
 
+                                    </div>
                                     {formulaire.result && (
                                         <div className="result-box">
                                             <p>
@@ -700,7 +754,7 @@ export default function SemelleGroup() {
 */ }
 
 
-                    <button className="btn-ajouter" onClick={addFormulaire}>
+                    <button className="Mybutton" onClick={addFormulaire}>
                         Ajouter une semelle
                     </button>
 

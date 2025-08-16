@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import './EstimationGrosBetonForm.css';
 import Chatbot from '../Chatbot/ChatBot';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -7,7 +8,8 @@ import Select from 'react-select';
 import NavBar from '../NavBar';
 import Footer from '../Footer';
 import NavigationArrows from '../NavigationArrows';
-const percentage = 30;
+import { useNavigate } from 'react-router-dom';
+const percentage = 20;
 
 
 // Utilitaire pour lire le cookie CSRF
@@ -25,12 +27,29 @@ function getCookie(name) {
   }
   return cookieValue;
 }
-
 export default function GrosBetonGroup() {
+  const navigate = useNavigate();
   const [typesBeton, setTypesBeton] = useState([]);
   const [formulaires, setFormulaires] = useState([]);
   const [materiaux, setMateriaux] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+
+  // Définir showToast en dehors du useEffect pour qu'il soit accessible partout
+  const showToast = (icon, title) => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({ icon, title });
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -48,7 +67,7 @@ export default function GrosBetonGroup() {
         });
 
         if (resMateriaux.status === 403 || resMateriaux.status === 401) {
-          alert("Vous devez vous connecter pour accéder aux matériaux.");
+          showToast('error', "⚠️ Vous devez vous connecter pour accéder à cette page.");
           setIsAuthenticated(false);
           return;
         }
@@ -79,7 +98,7 @@ export default function GrosBetonGroup() {
 
       } catch (error) {
         console.error('Erreur fetch générale :', error);
-        alert("Une erreur est survenue lors du chargement des données.");
+        showToast('error', "Une erreur est survenue lors du chargement des données.");
         setIsAuthenticated(false);
       }
     }
@@ -139,24 +158,24 @@ export default function GrosBetonGroup() {
   };
 
 
-// Options pour les types de ciments
-    const ciments = getMateriauxParCategorie('ciment');
-    const TypeCiment = ciments.map(mat => ({
-        value: mat.id,
-        label: `${mat.nom} – ${mat.prix} TND/${mat.unite}`
-    }));
+  // Options pour les types de ciments
+  const ciments = getMateriauxParCategorie('ciment');
+  const TypeCiment = ciments.map(mat => ({
+    value: mat.id,
+    label: `${mat.nom} – ${mat.prix} TND/${mat.unite}`
+  }));
   // Options pour les types de sable
-    const sables = getMateriauxParCategorie('sable');
-    const TypeSable = sables.map((mat) => ({
-        value: mat.id,
-        label: `${mat.nom} - ${mat.prix} TND/${mat.unite}`
-    }));
-    // Options pour les types de Gravier
-    const graviers = getMateriauxParCategorie('gravier');
-    const TypeGravier = graviers.map((mat) => ({
-        value: mat.id,
-        label: `${mat.nom} - ${mat.prix} TND/${mat.unite}`
-    }));
+  const sables = getMateriauxParCategorie('sable');
+  const TypeSable = sables.map((mat) => ({
+    value: mat.id,
+    label: `${mat.nom} - ${mat.prix} TND/${mat.unite}`
+  }));
+  // Options pour les types de Gravier
+  const graviers = getMateriauxParCategorie('gravier');
+  const TypeGravier = graviers.map((mat) => ({
+    value: mat.id,
+    label: `${mat.nom} - ${mat.prix} TND/${mat.unite}`
+  }));
 
   const supprimerFormulaire = (index) => {
     const newFormulaires = [...formulaires];
@@ -200,8 +219,18 @@ export default function GrosBetonGroup() {
   );
 
   if (!isAuthenticated) {
-    return <p style={{ color: 'red' }}>⚠️ Vous devez vous connecter pour accéder à cette page.</p>;
-  }
+  Swal.fire({
+    icon: "warning",
+    title: "⚠️ Vous devez vous connecter",
+    text: "Veuillez vous connecter pour accéder à cette page.",
+    confirmButtonText: "OK"
+  }).then(() => {
+        navigate("/login");//redirect to login page
+  });
+
+  return null; // DON T RENDER THE PAGE IF NOT AUTHENTICATED
+}
+  
 
   return (
     <>
@@ -228,7 +257,7 @@ export default function GrosBetonGroup() {
           <h1>Estimation de Traveaux</h1>
           <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
           <p>Tous les champs sont obligatoires.</p>
-          <h2>III) Gros Béton - Tâche 1.2</h2>
+          <h2>II) Gros Béton - Tâche 1.1</h2>
           {(() => {
             const elements = [];
             for (let index = 0; index < formulaires.length; index++) {
@@ -239,41 +268,41 @@ export default function GrosBetonGroup() {
 
 
 
-                                                      <label key={formulaire.id}>
-                                        Type de ciment :
-                                        <Select
-                                        styles={{
-                                                control: (baseStyles, state) => ({
-                                                    ...baseStyles,
-                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
-                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
-                                                    '&:hover': {
-                                                        borderColor: '#ffc800',
-                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
-                                                    },
+                  <label key={formulaire.id}>
+                    Type de ciment :
+                    <Select
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                          boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                          '&:hover': {
+                            borderColor: '#ffc800',
+                            boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                          },
 
-                                                }),
+                        }),
 
-                                            }}
-                                            theme={(theme) => ({
-                                                ...theme,
-                                                colors: {
-                                                    ...theme.colors,
-                                                    primary: '#ffc800',
-                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
-                                                },
-                                            })}
+                      }}
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary: '#ffc800',
+                          primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                        },
+                      })}
 
-                                            options={TypeCiment}
-                                            // find the option object whose value (mat.id) matches the stored ID
-                                            value={TypeCiment.find(opt => opt.value === formulaire.form.materiau_ciment_id) || null}
-                                            onChange={selectedOption =>
-                                                handleChange(index, 'materiau_ciment_id', selectedOption.value)
-                                            }
-                                            placeholder="Sélectionnez un ciment…"
-                                            isClearable
-                                        />
-                                    </label>
+                      options={TypeCiment}
+                      // find the option object whose value (mat.id) matches the stored ID
+                      value={TypeCiment.find(opt => opt.value === formulaire.form.materiau_ciment_id) || null}
+                      onChange={selectedOption =>
+                        handleChange(index, 'materiau_ciment_id', selectedOption.value)
+                      }
+                      placeholder="Sélectionnez un ciment…"
+                      isClearable
+                    />
+                  </label>
 
                   {/* ... le reste des labels inchangé ... */}
 
@@ -286,38 +315,38 @@ export default function GrosBetonGroup() {
                     />
                   </label>
 
-                 <label>
-                                        Type de sable :
-                                        <Select
-                                        styles={{
-                                                control: (baseStyles, state) => ({
-                                                    ...baseStyles,
-                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
-                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
-                                                    '&:hover': {
-                                                        borderColor: '#ffc800',
-                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
-                                                    },
+                  <label>
+                    Type de sable :
+                    <Select
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                          boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                          '&:hover': {
+                            borderColor: '#ffc800',
+                            boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                          },
 
-                                                }),
+                        }),
 
-                                            }}
-                                            theme={(theme) => ({
-                                                ...theme,
-                                                colors: {
-                                                    ...theme.colors,
-                                                    primary: '#ffc800',
-                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
-                                                },
-                                            })}
-                                            isClearable
-                                            options={TypeSable}
-                                            value={TypeSable.find(option => option.value === formulaire.form.materiau_sable_id)}
-                                            onChange={(selectedOption) =>
-                                                handleChange(index, 'materiau_sable_id', selectedOption.value)
-                                            }
-                                        />
-                                    </label>
+                      }}
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary: '#ffc800',
+                          primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                        },
+                      })}
+                      isClearable
+                      options={TypeSable}
+                      value={TypeSable.find(option => option.value === formulaire.form.materiau_sable_id)}
+                      onChange={(selectedOption) =>
+                        handleChange(index, 'materiau_sable_id', selectedOption.value)
+                      }
+                    />
+                  </label>
 
                   <label>
                     Quantité sable (m³) :
@@ -329,39 +358,39 @@ export default function GrosBetonGroup() {
                   </label>
 
                   <label key={`${formulaire.id},${index}`}>
-                                        Type de gravier :
-                                        <Select
-                                        styles={{
-                                                control: (baseStyles, state) => ({
-                                                    ...baseStyles,
-                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
-                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
-                                                    '&:hover': {
-                                                        borderColor: '#ffc800',
-                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
-                                                    },
+                    Type de gravier :
+                    <Select
+                      styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                          boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                          '&:hover': {
+                            borderColor: '#ffc800',
+                            boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                          },
 
-                                                }),
+                        }),
 
-                                            }}
-                                            theme={(theme) => ({
-                                                ...theme,
-                                                colors: {
-                                                    ...theme.colors,
-                                                    primary: '#ffc800',
-                                                    primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
-                                                },
-                                            })}
+                      }}
+                      theme={(theme) => ({
+                        ...theme,
+                        colors: {
+                          ...theme.colors,
+                          primary: '#ffc800',
+                          primary25: 'rgba(255, 200, 0, 0.25)', // Optional: hovered option bg
+                        },
+                      })}
 
-                                            options={TypeGravier}
-                                            value={TypeGravier.find(opt => opt.value === formulaire.form.materiau_gravier_id)}
-                                            onChange={(selectedOption) =>
-                                                handleChange(index, 'materiau_gravier_id', selectedOption.value)
-                                            }
-                                            placeholder="Sélectionnez un gravier…"
-                                            isClearable
-                                        />
-                                    </label>
+                      options={TypeGravier}
+                      value={TypeGravier.find(opt => opt.value === formulaire.form.materiau_gravier_id)}
+                      onChange={(selectedOption) =>
+                        handleChange(index, 'materiau_gravier_id', selectedOption.value)
+                      }
+                      placeholder="Sélectionnez un gravier…"
+                      isClearable
+                    />
+                  </label>
 
                   <label>
                     Quantité gravier (m³) :
@@ -425,19 +454,21 @@ export default function GrosBetonGroup() {
                       onChange={(e) => handleChange(index, 'prix_main_oeuvre', e.target.value)}
                     />
                   </label>
-                   <button
-                                        className="btn-supprimer"
-                                        style={{ marginBottom: '10px', backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', cursor: 'pointer' }}
-                                        onClick={() => supprimerFormulaire(index)}
-                                        aria-label={`Supprimer formulaire ${index + 1}`}
-                                    >
-                                        ❌ Supprimer
-                    </button>
-
-                  <button className="btn-calculer" onClick={() => calculer(index)}>
-                    Calculer
+                  <div className="btn-container">
+                    <button className="Mybutton" onClick={() => calculer(index)}>
+                    💰 Calculer
+                  </button>
+                  <button
+                    className="Mybutton"
+                    type="button"
+                    onClick={() => supprimerFormulaire(index)}
+                    aria-label={`Supprimer formulaire ${index + 1}`}
+                  >
+                     Supprimer
                   </button>
 
+                  
+                  </div>
                   {formulaire.result && (
                     <div className="resultat">
                       <p>
@@ -457,8 +488,8 @@ export default function GrosBetonGroup() {
             return elements;
           })()}
 
-          <button className="btn-ajouter" onClick={addFormulaire}>
-            ➕ Ajouter un gros béton
+          <button className="Mybutton" onClick={addFormulaire}>
+            + Ajouter gros béton
           </button>
 
           <div className="recapitulatif">

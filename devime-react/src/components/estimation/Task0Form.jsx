@@ -7,7 +7,27 @@ import Footer from '../Footer';
 import { CircularProgressbar,buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import NavigationArrows from '../NavigationArrows';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 const percentage = 10;
+
+// Utilitaire pour lire le cookie CSRF
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+ 
+
 const fouilleTypes = [
   { value: 'pleine_masse', label: 'Fouille en pleine masse' },
   { value: 'rigole', label: 'Fouille en rigole' },
@@ -57,6 +77,8 @@ const terrassementOptions = [
 
 
 export default function Task0Form() {
+     const navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [selectedSols, setSelectedSols] = useState([]);
     const [fouilles, setFouilles] = useState([
         {
@@ -73,6 +95,21 @@ export default function Task0Form() {
     const [terrassement, setTerrassement] = useState({ type_terrassement: '', prix_terrassement: '', description: '' });
     const [result, setResult] = useState(null);
     const [error, setError] = useState('');
+
+     const showToast = (icon, title) => {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({ icon, title });
+      };
 
     const handleSolChange = (value) => {
         setSelectedSols(prev =>
@@ -125,19 +162,47 @@ export default function Task0Form() {
                 description_terrassement: terrassement.description
             };
 
-            const res = await axios.post('http://localhost:8000/api/estimations/', payload);
+            const csrfToken = getCookie('csrftoken');
+
+    const res = await axios.post(
+      'http://localhost:8000/api/estimation-tache0/',
+      payload,
+      { headers: { 'X-CSRFToken': csrfToken } }
+    );
             setResult(res.data);
-        } catch (err) {
-            console.error('Erreur détaillée :', err);
-            if (err.response) {
-                setError(`Erreur ${err.response.status} : ${JSON.stringify(err.response.data)}`);
-            } else if (err.request) {
-                setError("Le serveur n'est pas joignable.");
-            } else {
-                setError("Erreur inconnue : " + err.message);
-            }
-        }
-    };
+         } catch (err) {
+    if (err.response) {
+      if ([401, 403].includes(err.response.status)) {
+        setIsAuthenticated(false);
+        Swal.fire({
+          icon: "warning",
+          title: "⚠️ Session expirée",
+          text: "Veuillez vous reconnecter.",
+          confirmButtonText: "OK"
+        }).then(() => navigate("/login"));
+        return;
+      }
+      setError(`Erreur ${err.response.status} : ${JSON.stringify(err.response.data)}`);
+    } else if (err.request) {
+      showToast("error", "Le serveur n'est pas joignable.");
+    } else {
+      showToast("error", "Erreur inconnue : " + err.message);
+    }
+       if (!isAuthenticated) {
+      Swal.fire({
+        icon: "warning",
+        title: "⚠️ Vous devez vous connecter",
+        text: "Veuillez vous connecter pour accéder à cette page.",
+        confirmButtonText: "OK"
+      }).then(() => {
+            navigate("/login");//redirect to login page
+      });
+    
+    
+      return null; // or redirect to login
+    }
+  }
+};
 
     return (
         <>
@@ -253,7 +318,7 @@ export default function Task0Form() {
                                     </div>
                                 );
                             })}
-                            <button type="button" onClick={addFouille}>+ Ajouter une fouille</button>
+                            <button className='Mybutton' type="button" onClick={addFouille}>+ Ajouter une fouille</button>
                         </fieldset>
                         <fieldset>
                             <legend>3) Terrassement</legend>
@@ -278,7 +343,7 @@ export default function Task0Form() {
                                 onChange={e => setTerrassement({ ...terrassement, description: e.target.value })}
                             />
                         </fieldset>
-                        <button type="submit">💰 Calculer</button>
+                        <button type="submit" className='Mybutton'>💰 Calculer</button>
                     </form>
                     {error && <div className="error-message" style={{ color: 'red', marginTop: 10 }}>{error}</div>}
                     {result && (
