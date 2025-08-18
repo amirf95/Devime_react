@@ -226,7 +226,14 @@ export default function Task0Form() {
                 <div className="form-container">
                     <h1>Estimation de travaux</h1>
                     <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
+                    <p className="disclaimer">
+    ⚠️ Les informations saisies dans ce formulaire pourront être collectées anonymement afin d’améliorer notre modèle d’estimation.
+    <br />
+    Le coût final pourra varier en fonction des conditions réelles du chantier et des matériaux choisis.
+  </p>
                     <p>Tous les champs sont obligatoires.</p>
+                     <br />
+                    <p> Tous les prix sont exprimés en Dinar Tunisien (TND).</p>
                     <h2>I) Fouilles - Tâche 0</h2>
                     <form className='Formulaire0' onSubmit={handleSubmit}>
                         <fieldset>

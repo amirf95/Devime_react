@@ -256,7 +256,14 @@ export default function GrosBetonGroup() {
         <div className="form-container">
           <h1>Estimation de Traveaux</h1>
           <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
+          <p className="disclaimer">
+    ⚠️ Les informations saisies dans ce formulaire pourront être collectées anonymement afin d’améliorer notre modèle d’estimation.
+    <br />  
+    Le coût final pourra varier en fonction des conditions réelles du chantier et des matériaux choisis.
+  </p>
           <p>Tous les champs sont obligatoires.</p>
+           <br />
+                    <p> Tous les prix sont exprimés en Dinar Tunisien (TND).</p>
           <h2>II) Gros Béton - Tâche 1.1</h2>
           {(() => {
             const elements = [];
@@ -471,6 +478,7 @@ export default function GrosBetonGroup() {
                   </div>
                   {formulaire.result && (
                     <div className="resultat">
+                      <h4>Résultat pour Gros Béton {index + 1}</h4>
                       <p>
                         <strong>Volume :</strong> {formulaire.result.volume.toFixed(2)} m³
                       </p>

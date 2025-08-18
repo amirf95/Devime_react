@@ -135,7 +135,7 @@ input:hover{
   background: #f0f0f0;
   border-left: 3px solid #ffc800;
   border-radius: 0.25rem;
-  color: #ffc800;
+  color: #000;
 }
 
 .resultat p {
