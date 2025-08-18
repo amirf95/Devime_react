@@ -4,39 +4,41 @@ import './Task0Form.css';
 import NavBar from '../NavBar';
 import Chatbot from '../Chatbot/ChatBot';
 import Footer from '../Footer';
-import { CircularProgressbar,buildStyles } from 'react-circular-progressbar';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import NavigationArrows from '../NavigationArrows';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import Select from "react-select";
 const percentage = 10;
 
 // Utilitaire pour lire le cookie CSRF
 function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
-  }
-  return cookieValue;
+    return cookieValue;
 }
- 
+
+
 
 const fouilleTypes = [
-  { value: 'pleine_masse', label: 'Fouille en pleine masse' },
-  { value: 'rigole', label: 'Fouille en rigole' },
-  { value: 'tranchee', label: 'Fouille en tranchée' },
-  { value: 'semelles_isolees', label: 'Fouille pour semelles isolées' },
-  { value: 'puits', label: 'Fouille en puits' },
-  { value: 'decapage_terre_vegetale', label: 'Décapage de terre végétale' },
-  { value: 'talus', label: 'Fouille en talus' },
-  { value: 'pieux', label: 'Fouille en pieux' },
+    { value: 'pleine_masse', label: 'Fouille en pleine masse' },
+    { value: 'rigole', label: 'Fouille en rigole' },
+    { value: 'tranchee', label: 'Fouille en tranchée' },
+    { value: 'semelles_isolees', label: 'Fouille pour semelles isolées' },
+    { value: 'puits', label: 'Fouille en puits' },
+    { value: 'decapage_terre_vegetale', label: 'Décapage de terre végétale' },
+    { value: 'talus', label: 'Fouille en talus' },
+    { value: 'pieux', label: 'Fouille en pieux' },
 ];
 
 const solOptions = [
@@ -77,7 +79,7 @@ const terrassementOptions = [
 
 
 export default function Task0Form() {
-     const navigate = useNavigate();
+    const navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [selectedSols, setSelectedSols] = useState([]);
     const [fouilles, setFouilles] = useState([
@@ -96,20 +98,20 @@ export default function Task0Form() {
     const [result, setResult] = useState(null);
     const [error, setError] = useState('');
 
-     const showToast = (icon, title) => {
+    const showToast = (icon, title) => {
         const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 5000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
         });
         Toast.fire({ icon, title });
-      };
+    };
 
     const handleSolChange = (value) => {
         setSelectedSols(prev =>
@@ -164,45 +166,45 @@ export default function Task0Form() {
 
             const csrfToken = getCookie('csrftoken');
 
-    const res = await axios.post(
-      'http://localhost:8000/api/estimation-tache0/',
-      payload,
-      { headers: { 'X-CSRFToken': csrfToken } }
-    );
+            const res = await axios.post(
+                'http://localhost:8000/api/estimations/',
+                payload,
+                { headers: { 'X-CSRFToken': csrfToken } }
+            );
             setResult(res.data);
-         } catch (err) {
-    if (err.response) {
-      if ([401, 403].includes(err.response.status)) {
-        setIsAuthenticated(false);
-        Swal.fire({
-          icon: "warning",
-          title: "⚠️ Session expirée",
-          text: "Veuillez vous reconnecter.",
-          confirmButtonText: "OK"
-        }).then(() => navigate("/login"));
-        return;
-      }
-      setError(`Erreur ${err.response.status} : ${JSON.stringify(err.response.data)}`);
-    } else if (err.request) {
-      showToast("error", "Le serveur n'est pas joignable.");
-    } else {
-      showToast("error", "Erreur inconnue : " + err.message);
-    }
-       if (!isAuthenticated) {
-      Swal.fire({
-        icon: "warning",
-        title: "⚠️ Vous devez vous connecter",
-        text: "Veuillez vous connecter pour accéder à cette page.",
-        confirmButtonText: "OK"
-      }).then(() => {
-            navigate("/login");//redirect to login page
-      });
-    
-    
-      return null; // or redirect to login
-    }
-  }
-};
+        } catch (err) {
+            if (err.response) {
+                if ([401, 403].includes(err.response.status)) {
+                    setIsAuthenticated(false);
+                    Swal.fire({
+                        icon: "warning",
+                        title: "⚠️ Session expirée",
+                        text: "Veuillez vous reconnecter.",
+                        confirmButtonText: "OK"
+                    }).then(() => navigate("/login"));
+                    return;
+                }
+                setError(`Erreur ${err.response.status} : ${JSON.stringify(err.response.data)}`);
+            } else if (err.request) {
+                showToast("error", "Le serveur n'est pas joignable.");
+            } else {
+                showToast("error", "Erreur inconnue : " + err.message);
+            }
+            if (!isAuthenticated) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "⚠️ Vous devez vous connecter",
+                    text: "Veuillez vous connecter pour accéder à cette page.",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    navigate("/login");//redirect to login page
+                });
+
+
+                return null; // or redirect to login
+            }
+        }
+    };
 
     return (
         <>
@@ -226,7 +228,7 @@ export default function Task0Form() {
                     <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
                     <p>Tous les champs sont obligatoires.</p>
                     <h2>I) Fouilles - Tâche 0</h2>
-                    <form onSubmit={handleSubmit}>
+                    <form className='Formulaire0' onSubmit={handleSubmit}>
                         <fieldset>
                             <legend>1) Types de sol</legend>
                             {solOptions.map(opt => (
@@ -251,16 +253,37 @@ export default function Task0Form() {
                                     <div key={index} className="fouille-group">
                                         <h4>Fouille #{index + 1}</h4>
                                         <label>Type:</label>
-                                        <select
+                                        <Select
+                                            styles={{
+                                                control: (baseStyles, state) => ({
+                                                    ...baseStyles,
+                                                    borderColor: state.isFocused ? '#ffc800' : baseStyles.borderColor,
+                                                    boxShadow: state.isFocused ? '0 0 0 2px rgba(255, 200, 0, 0.3)' : baseStyles.boxShadow,
+                                                    '&:hover': {
+                                                        borderColor: '#ffc800',
+                                                        boxShadow: '0 0 0 2px rgba(255, 200, 0, 0.3)',
+                                                    },
+
+                                                }),
+
+                                            }}
+                                            theme={(theme) => ({
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary: '#ffc800',
+                                                    // Optional: hovered option bg
+                                                    primary25: "#fcebb1",
+                                                    primary50: "#fff3e0",
+
+                                                },
+                                            })}
+                                            options={fouilleTypes}
                                             required
-                                            value={fouille.type_fouille}
-                                            onChange={e => handleFouilleChange(index, 'type_fouille', e.target.value)}
-                                        >
-                                            <option value="">-- Choisir un type de fouille --</option>
-                                            {fouilleTypes.map(option => (
-                                                <option key={option.value} value={option.value}>{option.label}</option>
-                                            ))}
-                                        </select>
+                                            value={fouilleTypes.find(option => option.value === fouille.type_fouille)}
+                                            onChange={option => handleFouilleChange(index, 'type_fouille', option.value)}
+                                            isClearable
+                                        />
                                         {!isPieuxOuPuits && (
                                             <>
                                                 <label>Longueur (m):</label>
@@ -323,14 +346,47 @@ export default function Task0Form() {
                         <fieldset>
                             <legend>3) Terrassement</legend>
                             <label>Type de terrassement:</label>
-                            <select
+                            <Select
+                                styles={{
+                                    control: (baseStyles, state) => ({
+                                        ...baseStyles,
+                                        borderColor: state.isFocused ? "#ffc800" : baseStyles.borderColor,
+                                        boxShadow: state.isFocused
+                                            ? "0 0 0 2px rgba(255, 200, 0, 0.3)"
+                                            : baseStyles.boxShadow,
+                                        "&:hover": {
+                                            borderColor: "#ffc800",
+                                            boxShadow: "0 0 0 2px rgba(255, 200, 0, 0.3)",
+                                        },
+                                    }),
+                                }}
+                                theme={(theme) => ({
+                                    ...theme,
+                                    colors: {
+                                        ...theme.colors,
+                                        primary: "#ffc800",   // selected option bg
+                                        primary25: "#fcebb1", // hover bg
+                                        primary50: "#fff3e0", // active bg
+                                    },
+                                })}
+                                options={terrassementOptions}
+                                isClearable
                                 required
-                                value={terrassement.type_terrassement}
-                                onChange={e => setTerrassement({ ...terrassement, type_terrassement: e.target.value })}
-                            >
-                                <option value="">-- Choisir un type --</option>
-                                {terrassementOptions.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-                            </select>
+                                // find the matching option object from terrassement.type_terrassement
+                                value={
+                                    terrassementOptions.find(
+                                        (opt) => opt.value === terrassement.type_terrassement
+                                    ) || null
+                                }
+                                onChange={(selected) =>
+                                    setTerrassement({
+                                        ...terrassement,
+                                        type_terrassement: selected ? selected.value : "",
+                                    })
+                                }
+                                placeholder="-- Choisir un type --"
+                            />
+
                             <label>Prix total terrassement (€):</label>
                             <input
                                 type="number" min="0" step="0.01" required

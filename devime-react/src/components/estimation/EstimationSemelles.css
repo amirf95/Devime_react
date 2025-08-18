@@ -234,3 +234,6 @@ select option:hover {
   box-shadow: 0 0 5px rgba(255, 200, 0, 0.5);
   transform: scale(1.02);
 }
+.formulaire-semelle h4{
+  border-left: 4px solid #ffc800;
+}

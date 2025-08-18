@@ -84,7 +84,9 @@ input:hover{
   max-width: 1200px;
   margin: 0 auto;
 }
-
+.formulaire-beton h4{
+  border-left: 4px solid #ffc800;
+}
 
 .gros-beton-wrapper h2 {
   font-size: 2rem;
