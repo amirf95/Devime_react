@@ -17,16 +17,19 @@ import Task0Form from "./components/estimation/Task0Form";
 import EntrepreneurPrixPage from "./components/estimation/EntrepreneurPrixPage";
 import EstimationGrosBetonForm from './components/estimation/EstimationGrosBetonForm';
 import EstimationSemelles from './components/estimation/EstimationSemelles'
-
+import ScrollTop from './components/ScrollTop';
 // import Unauthorized from './components/authentification/Unauthorized';
 
 
 
 import Chatbot from './components/Chatbot/ChatBot';
+import TaskDefault from './components/estimation/defaulttasks/TaskDefault';
 function MainApp() {
   return (
     <>
-      <NavBar />
+      <NavBar >
+      </NavBar>
+      
       <Header />
       <Services />
       <Examplaire />
@@ -45,6 +48,7 @@ function MainApp() {
 function App() {
   return (
     <Router>
+      <ScrollTop />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<MainApp />} />
@@ -54,7 +58,7 @@ function App() {
         <Route path="/prix-page" element={<EntrepreneurPrixPage />} />
         <Route path="/EstimationGrosBetonForm" element={<EstimationGrosBetonForm />} />
         <Route path="/EstimationSemelles" element={<EstimationSemelles />} />
-
+        <Route path="/TaskDefault" element={<TaskDefault />} />
         
         {/* <Route path="/Unauthorized" element={<Unauthorized />} /> */}
 

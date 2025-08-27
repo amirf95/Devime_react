@@ -10,6 +10,8 @@ import NavigationArrows from '../NavigationArrows';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Select from "react-select";
+import TaskDefault from '../estimation/defaulttasks/TaskDefault';
+import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 const percentage = 10;
 
 // Utilitaire pour lire le cookie CSRF
@@ -224,6 +226,7 @@ export default function Task0Form() {
                     },
                 })} />
                 <div className="form-container">
+                   
                     <h1>Estimation de travaux</h1>
                     <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
                     <p className="disclaimer">
@@ -232,8 +235,14 @@ export default function Task0Form() {
     Le coût final pourra varier en fonction des conditions réelles du chantier et des matériaux choisis.
   </p>
                     <p>Tous les champs sont obligatoires.</p>
+<<<<<<< HEAD
                      <br />
                     <p> Tous les prix sont exprimés en Dinar Tunisien (TND).</p>
+=======
+                     <ErrorBoundary>
+                     <TaskDefault />
+                        </ErrorBoundary>
+>>>>>>> Fnayna1
                     <h2>I) Fouilles - Tâche 0</h2>
                     <form className='Formulaire0' onSubmit={handleSubmit}>
                         <fieldset>

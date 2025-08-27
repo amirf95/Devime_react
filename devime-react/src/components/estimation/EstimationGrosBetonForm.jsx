@@ -300,7 +300,7 @@ export default function GrosBetonGroup() {
                         },
                       })}
 
-                      options={TypeCiment}
+                      options={TypeCiment.filter(opt => opt.label.split(" – ")[0] !== "Ciment blanc")}
                       // find the option object whose value (mat.id) matches the stored ID
                       value={TypeCiment.find(opt => opt.value === formulaire.form.materiau_ciment_id) || null}
                       onChange={selectedOption =>
