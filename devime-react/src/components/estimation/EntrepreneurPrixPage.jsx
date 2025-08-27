@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import './EntrepreneurPrixPage.css';
-import NavBar from '../NavBar';  // <-- ici l'import relatif
+import NavBar from '../NavBar';
 
 // Fonction pour récupérer le cookie CSRF
 function getCookie(name) {
@@ -19,19 +19,36 @@ function getCookie(name) {
     return cookieValue;
 }
 
+const api = axios.create({
+    baseURL: 'http://localhost:8000/api/',
+    withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+    const csrftoken = getCookie('csrftoken');
+    if (csrftoken) {
+        config.headers['X-CSRFToken'] = csrftoken;
+    }
+    return config;
+});
+
 function MateriauxEntrepreneur() {
     const [materiaux, setMateriaux] = useState([]);
+    const [allMateriaux, setAllMateriaux] = useState([]); // Store all materials for search
     const [isLoading, setIsLoading] = useState(true);
     const [successMessage, setSuccessMessage] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
     const [categories, setCategories] = useState([]);
     const [selectedCategorie, setSelectedCategorie] = useState('');
+    const [field, setField] = useState([]);
+    const [selectedField, setSelectedField] = useState('');
 
     const originalPrices = useRef({});
 
     useEffect(() => {
         fetchMateriaux();
-        fetchCategories();
+        fetchAllCategories();
+        fetchFields();
     }, []);
 
     useEffect(() => {
@@ -46,13 +63,37 @@ function MateriauxEntrepreneur() {
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [materiaux]);
 
+    useEffect(() => {
+        if (selectedField) {
+            api.get(`materiaux/categories-liste/${selectedField}/`)
+                .then(res => {
+                    setCategories(res.data);
+                    setSelectedCategorie('');
+                })
+                .catch(err => console.error('Error fetching categories:', err));
+        } else {
+            fetchAllCategories();
+        }
+    }, [selectedField]);
+
+    useEffect(() => {
+        fetchFilteredMateriaux();
+    }, [selectedField, selectedCategorie]);
+
+    const fetchAllCategories = async () => {
+        try {
+            const response = await api.get('materiaux/categories-liste/');
+            setCategories(response.data);
+        } catch (error) {
+            console.error("Error loading all categories:", error);
+        }
+    };
+
     const fetchMateriaux = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/materiaux/materiaux-entrepreneur/', {
-                withCredentials: true,
-            });
-
+            const response = await api.get('materiaux/materiaux-entrepreneur/');
             setMateriaux(response.data);
+            setAllMateriaux(response.data); // Store all materials for search
             setIsLoading(false);
 
             const pricesMap = {};
@@ -60,20 +101,42 @@ function MateriauxEntrepreneur() {
                 pricesMap[m.id] = m.prix_personnalise;
             });
             originalPrices.current = pricesMap;
-
         } catch (error) {
             console.error("Erreur lors du chargement des matériaux :", error);
         }
     };
 
-    const fetchCategories = async () => {
+    const fetchFields = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/api/materiaux/categories-liste/', {
-                withCredentials: true,
-            });
-            setCategories(response.data);
+            const response = await api.get('materiaux/champs-liste/');
+            setField(response.data);
         } catch (error) {
-            console.error("Erreur chargement des catégories :", error);
+            console.error("Erreur chargement des champs :", error);
+        }
+    };
+
+    const fetchFilteredMateriaux = async () => {
+        try {
+            let url = 'materiaux/materiaux-entrepreneur/';
+            const params = new URLSearchParams();
+            if (selectedField) params.append('champ', selectedField);
+            if (selectedCategorie) params.append('categorie', selectedCategorie);
+            
+            if (params.toString()) {
+                url += `?${params.toString()}`;
+            }
+            
+            const response = await api.get(url);
+            const filteredData = response.data;
+            setMateriaux(filteredData);
+            
+            const pricesMap = {};
+            filteredData.forEach(m => {
+                pricesMap[m.id] = m.prix_personnalise;
+            });
+            originalPrices.current = pricesMap;
+        } catch (error) {
+            console.error("Erreur lors du chargement des matériaux :", error);
         }
     };
 
@@ -91,8 +154,8 @@ function MateriauxEntrepreneur() {
         try {
             const csrftoken = getCookie('csrftoken');
 
-            await axios.post(
-                'http://localhost:8000/api/materiaux/update-prix-personnalises/',
+            await api.post(
+                'materiaux/update-prix-personnalises/',
                 {
                     updates: [
                         {
@@ -112,23 +175,33 @@ function MateriauxEntrepreneur() {
             originalPrices.current[materiau.id] = materiau.prix_personnalise;
             setSuccessMessage(`✅ Prix personnalisé enregistré pour "${materiau.nom}"`);
             setTimeout(() => setSuccessMessage(''), 3000);
-            fetchMateriaux();
+            fetchFilteredMateriaux();
         } catch (error) {
             console.error("Erreur lors de l'enregistrement :", error);
             alert("Erreur lors de l'enregistrement.");
         }
     };
 
+    // Filter materials based on search term
+    const filteredMateriaux = materiaux.filter(m => {
+        const search = searchTerm.toLowerCase();
+        return (
+            m.nom.toLowerCase().includes(search) ||
+            m.categorie.toLowerCase().includes(search) ||
+            (m.prix_standard && m.prix_standard.toString().includes(search)) ||
+            (m.prix_personnalise && m.prix_personnalise.toString().includes(search))
+        );
+    });
+
     if (isLoading) return <p>Chargement...</p>;
 
     return (
         <div className="entrepreneur-prix-page">
-                          <NavBar variant="login"/>
+            <NavBar variant="login" />
 
             <div style={{ maxWidth: '900px', margin: 'auto', padding: '20px' }}>
                 <h2>Mes Matériaux</h2>
 
-                {/* ✅ Zone de recherche */}
                 <div className="recherche-wrapper">
                     <input
                         type="text"
@@ -138,18 +211,28 @@ function MateriauxEntrepreneur() {
                         className="input-recherche"
                     />
                     <select
+                        value={selectedField}
+                        onChange={(e) => setSelectedField(e.target.value)}
+                    >
+                        <option value="">Tous les groupes</option>
+                        {field.map((champ) => (
+                            <option key={champ.id} value={champ.id}>{champ.nom}</option>
+                        ))}
+                    </select>
+
+                    <select
                         value={selectedCategorie}
                         onChange={(e) => setSelectedCategorie(e.target.value)}
                         className="select-categorie"
+                       
                     >
                         <option value="">Toutes les catégories</option>
                         {categories.map((cat) => (
-                            <option key={cat.id} value={cat.nom}>{cat.nom}</option>
+                            <option key={cat.id} value={cat.id}>{cat.nom}</option>
                         ))}
                     </select>
                 </div>
 
-                {/* ✅ Notification */}
                 {successMessage && (
                     <div style={{
                         position: 'fixed',
@@ -178,46 +261,33 @@ function MateriauxEntrepreneur() {
                         </tr>
                     </thead>
                     <tbody>
-                        {materiaux
-                            .filter(m => {
-                                const search = searchTerm.toLowerCase();
-                                const matchSearch =
-                                    m.nom.toLowerCase().includes(search) ||
-                                    m.categorie.toLowerCase().includes(search) ||
-                                    (m.prix_standard && m.prix_standard.toString().includes(search)) ||
-                                    (m.prix_personnalise && m.prix_personnalise.toString().includes(search));
-
-                                const matchCategorie = selectedCategorie === '' || m.categorie === selectedCategorie;
-
-                                return matchSearch && matchCategorie;
-                            })
-                            .map((m, index) => {
-                                const isModified = originalPrices.current[m.id] !== m.prix_personnalise;
-                                return (
-                                    <tr key={m.id} className={isModified ? "modified" : ""}>
-                                        <td>{m.nom}</td>
-                                        <td>{m.categorie}</td>
-                                        <td>{m.prix_standard} DT</td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                value={m.prix_personnalise !== null ? m.prix_personnalise : ''}
-                                                onChange={(e) => handleChange(index, e.target.value)}
-                                                className="input-prix"
-                                            />
-                                        </td>
-                                        <td>
-                                            <button
-                                                onClick={() => handleSave(m)}
-                                                disabled={!isModified}
-                                                className="btn-enregistrer"
-                                            >
-                                                Enregistrer
-                                            </button>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
+                        {filteredMateriaux.map((m, index) => {
+                            const isModified = originalPrices.current[m.id] !== m.prix_personnalise;
+                            return (
+                                <tr key={m.id} className={isModified ? "modified" : ""}>
+                                    <td>{m.nom}</td>
+                                    <td>{m.categorie}</td>
+                                    <td>{m.prix_standard} DT</td>
+                                    <td>
+                                        <input
+                                            type="number"
+                                            value={m.prix_personnalise !== null ? m.prix_personnalise : ''}
+                                            onChange={(e) => handleChange(index, e.target.value)}
+                                            className="input-prix"
+                                        />
+                                    </td>
+                                    <td>
+                                        <button
+                                            onClick={() => handleSave(m)}
+                                            disabled={!isModified}
+                                            className="btn-enregistrer"
+                                        >
+                                            Enregistrer
+                                        </button>
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             </div>

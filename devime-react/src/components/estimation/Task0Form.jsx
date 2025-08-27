@@ -10,6 +10,8 @@ import NavigationArrows from '../NavigationArrows';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import Select from "react-select";
+import TaskDefault from '../estimation/defaulttasks/TaskDefault';
+import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 const percentage = 10;
 
 // Utilitaire pour lire le cookie CSRF
@@ -224,9 +226,13 @@ export default function Task0Form() {
                     },
                 })} />
                 <div className="form-container">
+                   
                     <h1>Estimation de travaux</h1>
                     <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
                     <p>Tous les champs sont obligatoires.</p>
+                     <ErrorBoundary>
+                     <TaskDefault />
+                        </ErrorBoundary>
                     <h2>I) Fouilles - Tâche 0</h2>
                     <form className='Formulaire0' onSubmit={handleSubmit}>
                         <fieldset>
