@@ -1,169 +1,168 @@
 .entrepreneur-prix-page {
-  max-width: 900px;
-  margin: 50px auto;
-  padding: 30px 20px;
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 95%;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(255, 200, 0, 0.15);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   color: #222;
-  user-select: none;
-  transition: box-shadow 0.3s ease;
 }
 
 .entrepreneur-prix-page h2 {
   text-align: center;
-  font-weight: 800;
-  font-size: 2.6rem;
-  margin-bottom: 40px;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 30px;
   color: #333;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-shadow: none;
 }
 
+/* ✅ Table simple pleine largeur */
 .materiaux-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1rem;
-  color: #444;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(255, 200, 0, 0.1);
+  font-size: 0.95rem;
+  color: #333;
+  border: 1px solid #ddd;
 }
 
 .materiaux-table thead {
-  background: linear-gradient(90deg, #ffc800, #e6ac00);
-  box-shadow: 0 4px 10px rgba(255, 200, 0, 0.3);
+  background: #f7f7f7;
 }
 
 .materiaux-table thead th {
-  padding: 16px 12px;
+  padding: 12px 10px;
   color: #222;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  user-select: none;
-  border: none;
-}
-
-.materiaux-table thead th:first-child {
-  border-top-left-radius: 16px;
-}
-
-.materiaux-table thead th:last-child {
-  border-top-right-radius: 16px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #ddd;
 }
 
 .materiaux-table tbody tr {
   background: #fff;
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
-  box-shadow: 0 4px 8px rgb(0 0 0 / 0.05);
-  border-radius: 12px;
+  transition: background 0.2s ease;
 }
 
 .materiaux-table tbody tr:hover {
-  box-shadow: 0 10px 20px rgb(255 200 0 / 0.3);
-  transform: translateY(-3px);
+  background: #fafafa;
 }
 
 .materiaux-table tbody tr.modified {
-  background-color: #fff9c4;
-  box-shadow: 0 6px 14px rgba(255, 200, 0, 0.3);
+  background-color: #fffde7;
 }
 
 .materiaux-table td {
-  padding: 16px 12px;
+  padding: 12px 10px;
   text-align: center;
-  vertical-align: middle;
-  font-weight: 600;
-  color: #222;
-  border: none;
+  border: 1px solid #ddd;
+  font-weight: 500;
 }
 
+/* Champ prix */
 .input-prix {
-  width: 80px;
-  padding: 8px 10px;
-  font-weight: 600;
-  font-size: 1rem;
-  border: 2px solid transparent;
-  border-radius: 10px;
-  background: #fff9db;
-  color: #444;
-  box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.06);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 90px;
+  padding: 6px 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
   text-align: center;
+  transition: border-color 0.2s ease;
 }
 
 .input-prix:focus {
   outline: none;
-  border-color: #ffc800;
-  box-shadow: 0 0 8px #ffc800aa;
-  background: #fffbea;
+  border-color: #666;
 }
 
+/* Bouton enregistrer */
 .btn-enregistrer {
-  background: linear-gradient(135deg, #ffc800, #e6ac00);
+  background: #ffc107;
   color: #222;
   border: none;
-  padding: 12px 26px;
-  font-weight: 700;
-  font-size: 1rem;
-  border-radius: 14px;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 6px;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(255, 200, 0, 0.4);
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.15s ease;
-  user-select: none;
+  transition: background 0.2s ease;
 }
 
 .btn-enregistrer:hover:not(:disabled) {
-  background: linear-gradient(135deg, #e6ac00, #cca300);
-  box-shadow: 0 12px 28px rgba(255, 200, 0, 0.6);
-  transform: translateY(-2px);
+  background: #e0a800;
 }
 
 .btn-enregistrer:disabled {
-  background: #f7e6a5;
-  color: #a59d5f;
-  box-shadow: none;
+  background: #f0e0a3;
+  color: #777;
   cursor: not-allowed;
 }
 
-
-
-
+/* 🔍 Barre recherche */
 .recherche-wrapper {
   display: flex;
   gap: 12px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .recherche-wrapper .input-recherche,
 .recherche-wrapper .select-categorie {
-  padding: 10px 16px;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 12px;
-  border: 2px solid #ffd740;
-  background: #fffde7;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
   color: #333;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
-  outline: none;
-  min-width: 220px;
+  min-width: 200px;
+  transition: border-color 0.2s ease;
 }
 
 .recherche-wrapper .input-recherche:focus,
 .recherche-wrapper .select-categorie:focus {
-  border-color: #ffc800;
-  box-shadow: 0 0 10px rgba(255, 200, 0, 0.4);
-  background: #fffbe6;
+  border-color: #666;
 }
 
-.recherche-wrapper .select-categorie {
-  cursor: pointer;
+/* ✅ Notification sobre */
+.success-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #4caf50;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.page-title {
+  font-family: 'Poppins', sans-serif;   /* police moderne */
+  font-size: 2.8em;                     /* légèrement plus petit pour l’élégance */
+  font-weight: 700;                     /* bien gras */
+  text-align: center;                   /* centré */
+  margin: 30px 0;                       /* espace autour */
+  color: #e0a800;                       /* bleu élégant */
+  text-transform: uppercase;            /* tout en majuscules */
+  letter-spacing: 2px;                  /* espace entre lettres */
+  text-decoration: none;                /* supprime le soulignement */
 }
 
 
+
+.note-prix {
+  font-size: 1rem;                 /* un peu plus grand */
+  color: #2c3e50;                  /* couleur sombre et lisible */
+  background-color: #f0f8ff;       /* fond très clair pour se détacher */
+  padding: 10px 15px;              /* espace intérieur */
+  border-radius: 6px;              /* coins arrondis */
+  margin: 10px 0 25px 0;           /* espace au-dessus et en-dessous */
+  text-align: center;              /* centré pour plus de visibilité */
+  font-weight: 500;                /* légèrement en gras */
+  line-height: 1.5;
+  border: 1px solid #b0c4de;      /* contour léger pour délimiter */
+}

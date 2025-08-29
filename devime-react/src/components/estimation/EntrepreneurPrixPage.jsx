@@ -81,15 +81,15 @@ function MateriauxEntrepreneur() {
         return materiaux.some(m => originalPrices.current[m.id] !== m.prix_personnalise);
     };
 
-const handleChange = (id, value) => {
-    const updated = materiaux.map((m) => {
-        if (m.id === id) {
-            return { ...m, prix_personnalise: value };
-        }
-        return m;
-    });
-    setMateriaux(updated);
-};
+    const handleChange = (id, value) => {
+        const updated = materiaux.map((m) => {
+            if (m.id === id) {
+                return { ...m, prix_personnalise: value };
+            }
+            return m;
+        });
+        setMateriaux(updated);
+    };
 
 
     const handleSave = async (materiau) => {
@@ -130,8 +130,12 @@ const handleChange = (id, value) => {
         <div className="entrepreneur-prix-page">
             <NavBar variant="login" />
 
-            <div style={{ maxWidth: '900px', margin: 'auto', padding: '20px' }}>
-                <h2>Mes Matériaux</h2>
+<div style={{ width: '100%', padding: '20px' }}>
+                <h1 className="page-title">Mes matériaux</h1>
+                <p className="note-prix">
+                    Vous pouvez définir vos propres prix personnalisés pour les matériaux.
+                    Si vous ne les changez pas, le calcul sera basé sur les prix standards.
+                </p>
 
                 {/* ✅ Zone de recherche */}
                 <div className="recherche-wrapper">
@@ -154,23 +158,23 @@ const handleChange = (id, value) => {
                     </select>
                 </div>
 
-                {/* ✅ Notification */}
-                {successMessage && (
-                    <div style={{
-                        position: 'fixed',
-                        top: 20,
-                        right: 20,
-                        backgroundColor: '#4BB543',
-                        color: 'white',
-                        padding: '10px 20px',
-                        borderRadius: '5px',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-                        zIndex: 9999,
-                        fontWeight: 'bold',
-                    }}>
-                        {successMessage}
-                    </div>
-                )}
+                    {/* ✅ Notification */}
+                    {successMessage && (
+                        <div style={{
+                            position: 'fixed',
+                            top: 20,
+                            right: 20,
+                            backgroundColor: '#4BB543',
+                            color: 'white',
+                            padding: '10px 20px',
+                            borderRadius: '5px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                            zIndex: 9999,
+                            fontWeight: 'bold',
+                        }}>
+                            {successMessage}
+                        </div>
+                    )}
 
                 <table className="materiaux-table">
                     <thead>
@@ -205,6 +209,7 @@ const handleChange = (id, value) => {
                                         <td>{m.prix_standard} DT</td>
                                         <td>
                                             <input
+
                                                 type="number"
                                                 value={m.prix_personnalise !== null ? m.prix_personnalise : ''}
                                                 onChange={(e) => handleChange(m.id, e.target.value)}

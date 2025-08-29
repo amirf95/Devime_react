@@ -16,13 +16,12 @@ import UserProfile from './components/authentification/userprofil';
 import Task0Form from "./components/estimation/Task0Form";
 import EntrepreneurPrixPage from "./components/estimation/EntrepreneurPrixPage";
 import EstimationGrosBetonForm from './components/estimation/EstimationGrosBetonForm';
-import EstimationSemelles from './components/estimation/EstimationSemelles'
-
-// import Unauthorized from './components/authentification/Unauthorized';
-
-
+import EstimationSemelles from './components/estimation/EstimationSemelles';
 
 import Chatbot from './components/Chatbot/ChatBot';
+import ScrollToTop from './components/ScrollToTop';
+
+import StepProgressBar from './components/StepProgressBar';
 function MainApp() {
   return (
     <>
@@ -35,9 +34,8 @@ function MainApp() {
       <Clients />
       <Contact />
       <Footer />
-      
       <Chatbot />
-
+      
     </>
   );
 }
@@ -45,6 +43,7 @@ function MainApp() {
 function App() {
   return (
     <Router>
+      <ScrollToTop /> {/* <-- ici, scroll automatique en haut à chaque route */}
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/*" element={<MainApp />} />
@@ -54,9 +53,7 @@ function App() {
         <Route path="/prix-page" element={<EntrepreneurPrixPage />} />
         <Route path="/EstimationGrosBetonForm" element={<EstimationGrosBetonForm />} />
         <Route path="/EstimationSemelles" element={<EstimationSemelles />} />
-
-        
-        {/* <Route path="/Unauthorized" element={<Unauthorized />} /> */}
+        <Route path="/bar" element={<StepProgressBar />} />
 
       </Routes>
     </Router>

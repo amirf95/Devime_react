@@ -32,7 +32,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 9999; /* <-- très important pour rester au-dessus de tout */
+  pointer-events: auto; /* s’assure que le bouton est cliquable */
 }
+
 
 .toggler .icon {
   position: absolute;

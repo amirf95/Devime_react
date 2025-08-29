@@ -472,7 +472,7 @@ const navigate = useNavigate();
             <NavBar variant="login" />
             <Chatbot />
             <div className='alignment'>
-                <CircularProgressbar 
+                {/* <CircularProgressbar 
                 value={percentage} 
                 text={`${percentage}%`} 
                 styles={buildStyles({
@@ -486,7 +486,7 @@ const navigate = useNavigate();
                         transform: 'rotate(0.25turn)',
                         transformOrigin: 'center center',
                     },
-                })} />
+                })} /> */}
                 <div className="form-container">
 
                     <h1>Estimation de travaux</h1>
@@ -699,14 +699,14 @@ const navigate = useNavigate();
                                     {/* Affichage dynamique des champs selon le type sélectionné */}
                                     {renderChampsSemelle(formulaire, index)}
 
-                                    <label>
+                                    {/* <label>
                                         Prix de transport (TND) :
                                         <input
                                             type="number"
                                             value={formulaire.form.prix_transport}
                                             onChange={(e) => handleChange(index, 'prix_transport', e.target.value)}
                                         />
-                                    </label>
+                                    </label> */}
 
                                     <label>
                                         Prix main d'œuvre (TND) :

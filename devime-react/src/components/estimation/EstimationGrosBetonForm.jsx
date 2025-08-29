@@ -237,7 +237,7 @@ export default function GrosBetonGroup() {
       <NavBar variant="login" />
       <Chatbot />
       <div className="alignment">
-        <CircularProgressbar
+        {/* <CircularProgressbar
           value={percentage}
           text={`${percentage}%`}
           styles={buildStyles({
@@ -252,7 +252,7 @@ export default function GrosBetonGroup() {
               transformOrigin: 'center center',
             },
           })}
-        />
+        /> */}
         <div className="form-container">
           <h1>Estimation de Traveaux</h1>
           <p><b>Note : </b>Veuillez remplir le formulaire ci-dessous pour estimer le coût de vos travaux.</p>
@@ -437,14 +437,14 @@ export default function GrosBetonGroup() {
                     />
                   </label>
 
-                  <label>
+                  {/* <label>
                     Prix de transport (TND) :
                     <input
                       type="number"
                       value={formulaire.form.prix_transport}
                       onChange={(e) => handleChange(index, 'prix_transport', e.target.value)}
                     />
-                  </label>
+                  </label> */}
 
                   <label>
                     Prix main d'œuvre (TND) :

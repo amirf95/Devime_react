@@ -137,7 +137,7 @@ input:hover{
   border: 2px solid #ffc800;
   margin-top: 50px;
   padding: 30px;
-  max-width: 600px;
+  max-width: 1100px;
   margin: 120px auto ;
   font-family: 'Segoe UI', sans-serif;
   background: linear-gradient(to bottom right, #ffffff, #f9f9f9);
@@ -145,6 +145,11 @@ input:hover{
   transition: all 0.3s ease;
   box-shadow: 0 0 8px rgba(0,0,0,0.1);
 }
+.main-container {
+  padding: 0 10%;
+  margin-top: 70px; /* adapte selon ta navbar */
+}
+
 
 .fouille-group {
   padding: 10px;
@@ -209,3 +214,14 @@ fieldset input:hover{
   box-shadow: 0 0 5px rgba(255, 200, 0, 0.5);
   transform: scale(1.02);
 }
+
+
+select {
+  background-color: #fff;
+  color: #000;
+}
+select:invalid {
+  color: #6c757d; /* gris avant choix */
+}
+
+

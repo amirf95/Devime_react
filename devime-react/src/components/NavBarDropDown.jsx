@@ -23,9 +23,9 @@ const NavBarDropDown = ({ isSignedIn, onLogout, isOpen}) => {
               <li>
                 <a href="/projects">My Projects</a>
               </li>
-              <li>
+              {/* <li>
                 <a href="/contact">Contact Us</a>
-              </li>
+              </li> */}
                   <li>
                 <a href="/prix-page">Liste prix</a>
               </li>
